@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="hello">Hello World, PlayerToolkitMain!</string>
+    <string name="app_name">Pathfinder Player Toolkit</string>
+    <string name="character_level">Character Level</string>
+    <string-array name="character_levels_array">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+        <item>11</item>
+        <item>12</item>
+        <item>13</item>
+        <item>14</item>
+        <item>15</item>
+        <item>16</item>
+        <item>17</item>
+        <item>18</item>
+        <item>19</item>
+        <item>20</item>
+    </string-array>
+    <string-array name="ability_scores_array">
+        <item>1 (-5)</item>
+        <item>2 (-4)</item>
+        <item>3 (-4)</item>
+        <item>4 (-3)</item>
+        <item>5 (-3)</item>
+        <item>6 (-2)</item>
+        <item>7 (-2)</item>
+        <item>8 (-1)</item>
+        <item>9 (-1)</item>
+        <item>10 (0)</item>
+        <item>11 (0)</item>
+        <item>12 (+1)</item>
+        <item>13 (+1)</item>
+        <item>14 (+2)</item>
+        <item>15 (+2)</item>
+        <item>16 (+3)</item>
+        <item>17 (+3)</item>
+        <item>18 (+4)</item>
+        <item>19 (+5)</item>
+        <item>20 (+5)</item>
+        <item>21 (+5)</item>
+        <item>22 (+6)</item>
+        <item>23 (+6)</item>
+        <item>24 (+7)</item>
+        <item>25 (+7)</item>
+        <item>26 (+8)</item>
+        <item>27 (+8)</item>
+        <item>28 (+9)</item>
+        <item>29 (+9)</item>
+        <item>30 (+10)</item>
+        <item>31 (+10)</item>
+        <item>32 (+11)</item>
+        <item>33 (+11)</item>
+    </string-array>
+    
+</resources>

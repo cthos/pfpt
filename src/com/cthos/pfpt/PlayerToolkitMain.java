@@ -1,0 +1,28 @@
+package com.cthos.pfpt;
+
+import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Bundle;
+import android.view.*;
+
+public class PlayerToolkitMain extends Activity {
+    /** Called when the activity is first created. */
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.main);
+    }
+    
+    public void onCreateCharacter(View v)
+    {
+    	Intent i = new Intent();
+    	i.setClassName("com.cthos.pfpt", "com.cthos.pfpt.CreateCharacter");
+    	startActivity(i);
+    }
+    
+    public void openPFSRD(View v)
+    {
+    	startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.d20pfsrd.com")));
+    }
+}
