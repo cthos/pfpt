@@ -1,16 +1,29 @@
 package com.cthos.pfpt;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Spinner;
 
 public class CreateCharacter extends Activity 
 {
 	public final int MENU_ITEM_CANCEL = 2010;
+	
+	private OnClickListener saveCharListener = new OnClickListener() {
+    	public void onClick(View v)
+    	{
+    		new AlertDialog.Builder(v.getContext())
+    	      .setMessage("Congrats...this will do something soon.")
+    	      .show();
+    	}
+    };
 	
 	 /** Called when the activity is first created. */
     @Override
@@ -19,6 +32,9 @@ public class CreateCharacter extends Activity
         setContentView(R.layout.create_character);
         
         this.setUpSpinners();
+        
+        Button saveChar = (Button) findViewById(R.id.createCharButton);
+        saveChar.setOnClickListener(this.saveCharListener);
     }
     
     private void setUpSpinners()
