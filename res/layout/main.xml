@@ -14,7 +14,8 @@
     	android:text="Load Character" 
     	android:id="@+id/LoadCharacter" 
     	android:layout_width="match_parent" 
-    	android:layout_height="wrap_content"></Button>
+    	android:layout_height="wrap_content"
+    	android:onClick="onLoadCharacter"></Button>
     <Button 
     	android:text="Open d20pfsrd.com" 
     	android:id="@+id/d20Link" 

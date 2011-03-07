@@ -21,6 +21,13 @@ public class PlayerToolkitMain extends Activity {
     	startActivity(i);
     }
     
+    public void onLoadCharacter(View v)
+    {
+    	Intent i = new Intent();
+    	i.setClassName("com.cthos.pfpt", "com.cthos.pfpt.LoadCharacter");
+    	startActivity(i);
+    }
+    
     public void openPFSRD(View v)
     {
     	startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.d20pfsrd.com")));

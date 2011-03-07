@@ -3,6 +3,8 @@
  */
 package com.cthos.pfpt.core;
 
+import android.net.Uri;
+
 import com.cthos.pfpt.core.ArmorClass;
 
 /**
@@ -11,6 +13,8 @@ import com.cthos.pfpt.core.ArmorClass;
  */
 public class Character 
 {
+	public static final Uri CONTENT_URI = Uri.parse("content://com.cthos.pfpt.core/character");
+	
 	public String name;
 	
 	public ArmorClass ac;
