@@ -60,5 +60,7 @@
         <item>32 (+11)</item>
         <item>33 (+11)</item>
     </string-array>
+        <string name="edit">Edit</string>
+        <string name="delete">Delete</string>
     
 </resources>

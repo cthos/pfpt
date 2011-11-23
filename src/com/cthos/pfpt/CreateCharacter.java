@@ -7,6 +7,7 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
@@ -35,15 +36,19 @@ public class CreateCharacter extends Activity
 	
 	public static String chaValue;
 	
+	protected ContentResolver cr;
+	
+	protected ContentValues val;
+	
 	private OnClickListener saveCharListener = new OnClickListener() {
     	public void onClick(View v)
     	{
-    		ContentResolver cr = getContentResolver();
+    		cr = getContentResolver();
     		
     		Activity ac = (Activity) v.getContext();
     		EditText et = (EditText) ac.findViewById(R.id.characterName);
     		
-    		ContentValues val = new ContentValues();
+    		val = new ContentValues();
     		val.put("name", et.getText().toString());
     		val.put("level", CreateCharacter.lvValue);
     		val.put("strength", CreateCharacter.strValue);
@@ -53,7 +58,13 @@ public class CreateCharacter extends Activity
     		val.put("intellegence", CreateCharacter.intValue);
     		val.put("charisma", CreateCharacter.chaValue);
     		
-    		cr.insert(Uri.parse("content://com.cthos.pfpt.core/character"), val);
+    		new AsyncTask<Void, Void, Void> () {
+    			@Override
+    			protected Void doInBackground(Void... args) {
+    				cr.insert(Uri.parse("content://com.cthos.pfpt.core/character"), val);
+    				return null;
+    			}
+    		}.execute();
     		
     		Intent i = new Intent();
         	i.setClassName("com.cthos.pfpt", "com.cthos.pfpt.PlayerToolkitMain");

@@ -7,6 +7,9 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
+import android.view.MenuInflater;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
@@ -35,18 +38,26 @@ public class LoadCharacter extends ListActivity
 		 	null,
 		    "_id ASC"
 	    );
-
-        // Used to map notes entries from the database to views
+		
         SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, R.layout.load_character_item, cursor,
                 new String[] { "name" }, new int[] { android.R.id.text1 });
         setListAdapter(adapter);
+        
+        registerForContextMenu(getListView());
 	 }
 	 
 	@Override
-	protected void onListItemClick(ListView l, View v, int position, long id) {
+	protected void onListItemClick(ListView l, View v, int position, long id)
+	{
 		 new AlertDialog.Builder(v.getContext())
               .setMessage("Next Week: This'll do something.")
               .show();
-
+	}
+	
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo)
+	{
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.load_character_context, menu);
 	}
 }
