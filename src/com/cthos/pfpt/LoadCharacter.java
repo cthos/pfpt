@@ -2,15 +2,20 @@ package com.cthos.pfpt;
 
 import android.app.AlertDialog;
 import android.app.ListActivity;
+import android.content.ContentProvider;
+import android.content.ContentProviderClient;
 import android.content.ContentUris;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
@@ -39,6 +44,8 @@ public class LoadCharacter extends ListActivity
 		    "_id ASC"
 	    );
 		
+		startManagingCursor(cursor);
+		 
         SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, R.layout.load_character_item, cursor,
                 new String[] { "name" }, new int[] { android.R.id.text1 });
         setListAdapter(adapter);
@@ -49,9 +56,10 @@ public class LoadCharacter extends ListActivity
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id)
 	{
-		 new AlertDialog.Builder(v.getContext())
-              .setMessage("Next Week: This'll do something.")
-              .show();
+		 Intent i = new Intent();
+		 i.setClassName("com.cthos.pfpt", "com.cthos.pfpt.ViewCharacter");
+		 i.putExtra("characterId", id);
+		 startActivity(i);
 	}
 	
 	@Override
@@ -59,5 +67,31 @@ public class LoadCharacter extends ListActivity
 	{
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.load_character_context, menu);
+	}
+	
+	@Override
+	public boolean onContextItemSelected(MenuItem item)
+	{
+		AdapterView.AdapterContextMenuInfo info;
+		info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+		
+		long id = getListAdapter().getItemId(info.position);
+        Log.d("", "id = " + id);
+		
+        Uri editUri = ContentUris.withAppendedId(Uri.parse("content://com.cthos.pfpt.core/character"), id);
+        
+        ContentProviderClient client = getContentResolver().acquireContentProviderClient(editUri);
+        ContentProvider provider = client.getLocalContentProvider();
+        
+		switch (item.getItemId()) {
+			case R.id.edit_character:
+				
+				break;
+			case R.id.delete:
+				provider.delete(editUri, null, null);
+				break;
+		}
+		
+		return true;
 	}
 }

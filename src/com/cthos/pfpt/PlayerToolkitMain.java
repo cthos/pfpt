@@ -32,4 +32,9 @@ public class PlayerToolkitMain extends Activity {
     {
     	startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.d20pfsrd.com")));
     }
+    
+    public void openPRD(View v)
+    {
+    	startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://paizo.com/pathfinderRPG/prd/")));
+    }
 }

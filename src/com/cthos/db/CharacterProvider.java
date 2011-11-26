@@ -55,7 +55,7 @@ public class CharacterProvider extends ContentProvider
                     + "strength INTEGER DEFAULT 8,"
                     + "dexterity INTEGER DEFAULT 8,"
                     + "constitution INTEGER DEFAULT 8,"
-                    + "intellegence INTEGER DEFAULT 8,"
+                    + "intelligence INTEGER DEFAULT 8,"
                     + "wisdom INTEGER DEFAULT 8,"
                     + "charisma INTEGER DEFAULT 8"
                     + ");");
@@ -90,7 +90,11 @@ public class CharacterProvider extends ContentProvider
         case CHARACTER:
             qb.setProjectionMap(characterProjectionMap);
             break;
-
+        case CHARACTER_ID:
+        	selection = "_ID = ?";
+        	long id = ContentUris.parseId(uri);
+        	selectionArgs = new String[] {String.valueOf(id)};
+        	break;
         default:
             throw new IllegalArgumentException("Unknown URI " + uri);
         }
@@ -156,7 +160,11 @@ public class CharacterProvider extends ContentProvider
         case CHARACTER:
             count = db.delete(CHARACTER_TABLE_NAME, where, whereArgs);
             break;
-
+        case CHARACTER_ID:
+        	long id = ContentUris.parseId(uri);
+        	String[] idAr = {String.valueOf(id)};
+        	count = db.delete(CHARACTER_TABLE_NAME, "_ID = ?", idAr);
+        	break;
         default:
             throw new IllegalArgumentException("Unknown URI " + uri);
         }
@@ -185,7 +193,8 @@ public class CharacterProvider extends ContentProvider
     static {
         sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
         sUriMatcher.addURI("com.cthos.pfpt.core", "character", CHARACTER);
-
+        sUriMatcher.addURI("com.cthos.pfpt.core", "character/#", CHARACTER_ID);
+        
         characterProjectionMap = new HashMap<String, String>();
         characterProjectionMap.put("_id", "_id");
         characterProjectionMap.put("name", "name");
@@ -195,7 +204,7 @@ public class CharacterProvider extends ContentProvider
         characterProjectionMap.put("dexterity", "dexterity");
         characterProjectionMap.put("constitution", "constitution");
         characterProjectionMap.put("wisdom", "wisdom");
-        characterProjectionMap.put("intellegence", "intellegence");
+        characterProjectionMap.put("intelligence", "intelligence");
         characterProjectionMap.put("charisma", "charisma");
     }
 }

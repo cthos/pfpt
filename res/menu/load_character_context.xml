@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
-    <item android:id="@+id/item1" android:title="@string/edit" android:visible="true" android:enabled="true"></item>
-    <item android:id="@+id/item2" android:title="@string/delete" android:visible="true" android:enabled="true"></item>
+    <item android:id="@+id/edit_character" android:title="@string/edit" android:visible="true" android:enabled="true"></item>
+    <item android:id="@+id/delete" android:title="@string/delete" android:visible="true" android:enabled="true"></item>
 </menu>

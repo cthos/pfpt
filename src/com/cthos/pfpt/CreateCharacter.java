@@ -55,7 +55,7 @@ public class CreateCharacter extends Activity
     		val.put("dexterity", CreateCharacter.dexValue);
     		val.put("constitution", CreateCharacter.conValue);
     		val.put("wisdom", CreateCharacter.wisValue);
-    		val.put("intellegence", CreateCharacter.intValue);
+    		val.put("intelligence", CreateCharacter.intValue);
     		val.put("charisma", CreateCharacter.chaValue);
     		
     		new AsyncTask<Void, Void, Void> () {
