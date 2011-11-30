@@ -1,35 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  android:layout_width="match_parent"
-  android:layout_height="match_parent" android:orientation="vertical">
-    <TextView android:text="Name" android:id="@+id/nameLabel" android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
-    <EditText android:id="@+id/characterName" android:text="" android:layout_width="match_parent" android:layout_height="wrap_content"></EditText>
-    <TextView android:text="Level" android:id="@+id/levelLabel" android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
-    <Spinner android:layout_height="wrap_content" android:layout_width="match_parent" android:id="@+id/levelSpinner"></Spinner>
-    <LinearLayout android:id="@+id/linearLayout1" android:layout_height="wrap_content" android:layout_width="match_parent">
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/strengthLabel" android:text="Strength"></TextView>
-        <Spinner android:layout_height="wrap_content" android:id="@+id/strengthSpinner" android:layout_width="wrap_content" android:layout_marginLeft="28dip"></Spinner>
-    </LinearLayout>
-    <LinearLayout android:id="@+id/LinearLayout01" android:layout_height="wrap_content" android:layout_width="match_parent">
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Dexterity" android:id="@+id/dexterityLabel"></TextView>
-        <Spinner android:layout_height="wrap_content" android:id="@+id/dexteritySpinner" android:layout_width="wrap_content" android:layout_marginLeft="25dip"></Spinner>
-    </LinearLayout>
-    <LinearLayout android:id="@+id/LinearLayout02" android:layout_height="wrap_content" android:layout_width="match_parent">
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/constitutionLabel" android:text="Constitution"></TextView>
-        <Spinner android:layout_height="wrap_content" android:id="@+id/constitutionSpinner" android:layout_width="wrap_content" android:layout_marginLeft="5dip"></Spinner>
-    </LinearLayout>
-    <LinearLayout android:id="@+id/LinearLayout03" android:layout_height="wrap_content" android:layout_width="match_parent">
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/intellegenceLabel" android:text="Intellegence"></TextView>
-        <Spinner android:layout_height="wrap_content" android:layout_width="wrap_content" android:id="@+id/intellegenceSpinner" android:layout_marginLeft="3dip"></Spinner>
-    </LinearLayout>
-    <LinearLayout android:id="@+id/LinearLayout04" android:layout_height="wrap_content" android:layout_width="match_parent">
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Wisdom" android:id="@+id/wisdomLabel"></TextView>
-        <Spinner android:layout_height="wrap_content" android:layout_width="wrap_content" android:id="@+id/wisdomSpinner" android:layout_marginLeft="30dip"></Spinner>
-    </LinearLayout>
-    <LinearLayout android:id="@+id/LinearLayout05" android:layout_height="wrap_content" android:layout_width="match_parent">
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Charisma" android:id="@+id/charismaLabel"></TextView>
-        <Spinner android:layout_height="wrap_content" android:layout_width="wrap_content" android:id="@+id/charismaSpinner" android:layout_marginLeft="22dip"></Spinner>
-    </LinearLayout>
-    <Button android:layout_height="wrap_content" android:id="@+id/createCharButton" android:text="Done" android:layout_width="fill_parent"></Button>
-</LinearLayout>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android" android:id="@+id/scrollView1" android:layout_width="match_parent" android:layout_height="wrap_content" >
+	<LinearLayout
+	  android:layout_width="match_parent"
+	  android:layout_height="match_parent" android:orientation="vertical" android:scrollbars="vertical" android:isScrollContainer="true">
+	    <TextView android:text="Name" android:id="@+id/nameLabel" android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
+	    <EditText android:id="@+id/characterName" android:text="" android:layout_width="match_parent" android:layout_height="wrap_content"></EditText>
+	    <TextView android:text="Level" android:id="@+id/levelLabel" android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
+	    <Spinner android:layout_height="wrap_content" android:layout_width="match_parent" android:id="@+id/levelSpinner"></Spinner>
+	    <LinearLayout android:id="@+id/linearLayout1" android:layout_height="wrap_content" android:layout_width="match_parent">
+	        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/strengthLabel" android:text="Strength"></TextView>
+	        <Spinner android:layout_height="wrap_content" android:id="@+id/strengthSpinner" android:layout_width="wrap_content" android:layout_marginLeft="28dip"></Spinner>
+	    </LinearLayout>
+	    <LinearLayout android:id="@+id/LinearLayout01" android:layout_height="wrap_content" android:layout_width="match_parent">
+	        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Dexterity" android:id="@+id/dexterityLabel"></TextView>
+	        <Spinner android:layout_height="wrap_content" android:id="@+id/dexteritySpinner" android:layout_width="wrap_content" android:layout_marginLeft="25dip"></Spinner>
+	    </LinearLayout>
+	    <LinearLayout android:id="@+id/LinearLayout02" android:layout_height="wrap_content" android:layout_width="match_parent">
+	        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/constitutionLabel" android:text="Constitution"></TextView>
+	        <Spinner android:layout_height="wrap_content" android:id="@+id/constitutionSpinner" android:layout_width="wrap_content" android:layout_marginLeft="5dip"></Spinner>
+	    </LinearLayout>
+	    <LinearLayout android:id="@+id/LinearLayout03" android:layout_height="wrap_content" android:layout_width="match_parent">
+	        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/intellegenceLabel" android:text="Intellegence"></TextView>
+	        <Spinner android:layout_height="wrap_content" android:layout_width="wrap_content" android:id="@+id/intellegenceSpinner" android:layout_marginLeft="3dip"></Spinner>
+	    </LinearLayout>
+	    <LinearLayout android:id="@+id/LinearLayout04" android:layout_height="wrap_content" android:layout_width="match_parent">
+	        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Wisdom" android:id="@+id/wisdomLabel"></TextView>
+	        <Spinner android:layout_height="wrap_content" android:layout_width="wrap_content" android:id="@+id/wisdomSpinner" android:layout_marginLeft="30dip"></Spinner>
+	    </LinearLayout>
+	    <LinearLayout android:id="@+id/LinearLayout05" android:layout_height="wrap_content" android:layout_width="match_parent">
+	        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Charisma" android:id="@+id/charismaLabel"></TextView>
+	        <Spinner android:layout_height="wrap_content" android:layout_width="wrap_content" android:id="@+id/charismaSpinner" android:layout_marginLeft="22dip"></Spinner>
+	    </LinearLayout>
+	    <Button android:layout_height="wrap_content" android:id="@+id/createCharButton" android:text="Done" android:layout_width="fill_parent"></Button>
+	</LinearLayout>
+</ScrollView>

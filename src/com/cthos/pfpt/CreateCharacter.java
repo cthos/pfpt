@@ -18,22 +18,28 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 
+/**
+ * Handles the CreateCharacter activity, which shows the
+ * form to create a new character. This activity will
+ * also handle the editing of characters' base attributes.
+ * 
+ * 
+ * @author Alex Ward <daginus@gmail.com>
+ */
 public class CreateCharacter extends Activity 
 {
 	public final int MENU_ITEM_CANCEL = 2010;
 	
 	public static String lvValue;
 	
+	/**
+	 * The following hold the standard Pathfinder attributes
+	 */
 	public static String strValue;
-	
 	public static String dexValue;
-	
 	public static String conValue;
-	
 	public static String wisValue;
-	
 	public static String intValue;
-	
 	public static String chaValue;
 	
 	protected ContentResolver cr;
@@ -175,7 +181,7 @@ public class CreateCharacter extends Activity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
-
+        
         // This is our one standard application action -- inserting a
         // new note into the list.
         menu.add(0, MENU_ITEM_CANCEL, 0, "Cancel Character")
