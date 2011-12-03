@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android" android:id="@+id/scrollView1" android:layout_width="match_parent" android:layout_height="wrap_content" >
+	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent"
+	    android:gravity="center_horizontal"
+	    android:orientation="vertical" >
+	
+	    <TextView
+	        android:id="@+id/create_slotted_header"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="Create Slotted Item"
+	        android:textAppearance="?android:attr/textAppearanceLarge" />
+	
+	    <LinearLayout
+	        android:id="@+id/linearLayout1"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content" >
+	
+	        <LinearLayout
+	            android:id="@+id/linearLayout2"
+	            android:layout_width="96dp"
+	            android:layout_height="match_parent"
+	            android:orientation="vertical" android:paddingLeft="5px">
+
+	            <TextView
+	                android:id="@+id/slotted_item_name_label"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:text="Name"
+	                android:textAppearance="?android:attr/textAppearanceMedium" android:layout_weight="0.05" android:gravity="center_vertical"/>
+
+	            <TextView
+	                android:id="@+id/slotted_item_slot_label"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:text="Slot"
+	                android:textAppearance="?android:attr/textAppearanceMedium" android:layout_weight="0.05" android:gravity="center_vertical"/>
+	
+	        </LinearLayout>
+	
+	        <LinearLayout
+	            android:id="@+id/linearLayout3"
+	            android:layout_width="wrap_content"
+	            android:layout_height="match_parent"
+	            android:orientation="vertical" >
+	
+	            <EditText
+	                android:id="@+id/slotted_item_name"
+	                android:layout_width="207dp"
+	                android:layout_height="wrap_content">
+	
+	                <requestFocus />
+	            </EditText>
+
+	            <Spinner
+	                android:id="@+id/slotted_item_slot_spinner"
+	                android:layout_width="match_parent"
+	                android:layout_height="wrap_content" />
+
+	        </LinearLayout>
+	    </LinearLayout>
+
+	    <Button
+	        android:id="@+id/slotted_item_add_bonus_button"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:text="Add Bonus" />
+
+	</LinearLayout>
+</ScrollView>

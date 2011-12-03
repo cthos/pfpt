@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
@@ -135,5 +136,23 @@ public class ViewCharacter extends Activity
                 new ComponentName(this, CreateCharacter.class), null, intent, 0, null);
 
         return true;
+    }
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+    	Intent intent = new Intent();
+    	
+    	switch (item.getItemId()) {
+    		case MENU_ITEM_INVENTORY:
+    			intent.setClassName("com.cthos.pfpt", "com.cthos.pfpt.InventoryActivity");
+    			break;
+    		default:
+    			return false;
+    	}
+    	
+    	startActivity(intent);
+    	
+    	return true;
     }
 }

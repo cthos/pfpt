@@ -60,6 +60,23 @@
         <item>32 (+11)</item>
         <item>33 (+11)</item>
     </string-array>
+    <string-array name="slotted_items_slots_array">
+    	<item>Armor</item>
+    	<item>Belt</item>
+    	<item>Body</item>
+    	<item>Chest</item>
+    	<item>Eyes</item>
+    	<item>Feet</item>
+    	<item>Hands</item>
+    	<item>Head</item>
+    	<item>Headband</item>
+    	<item>Neck</item>
+    	<item>Ring 1</item>
+    	<item>Ring 2</item>
+    	<item>Shield</item>
+    	<item>Shoulders</item>
+    	<item>Wrist</item>
+    </string-array>
         <string name="edit">Edit</string>
         <string name="delete">Delete</string>
     
