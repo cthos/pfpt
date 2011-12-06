@@ -22,8 +22,7 @@ public class SlottedItemProvider extends ContentProvider
 	
 	private static final String TAG = "SlottedItemProvider";
 
-    private static final String DATABASE_NAME = "character.db";
-    private static final int DATABASE_VERSION = 3;
+    private static final String DATABASE_NAME = "slotted_items.db";
     private static final String SLOTTED_ITEM_TABLE_NAME = "slotted_items";
     
     private static final int SLOTTED_ITEM = 1;
@@ -39,7 +38,7 @@ public class SlottedItemProvider extends ContentProvider
     private static class DatabaseHelper extends SQLiteOpenHelper
     {
         DatabaseHelper(Context context) {
-            super(context, DATABASE_NAME, null, DATABASE_VERSION);
+            super(context, DATABASE_NAME, null, CharacterProvider.DATABASE_VERSION);
         }
 
         @Override
