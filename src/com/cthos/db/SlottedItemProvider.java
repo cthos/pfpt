@@ -23,7 +23,7 @@ public class SlottedItemProvider extends ContentProvider
 	private static final String TAG = "SlottedItemProvider";
 
     private static final String DATABASE_NAME = "character.db";
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
     private static final String SLOTTED_ITEM_TABLE_NAME = "slotted_items";
     
     private static final int SLOTTED_ITEM = 1;
@@ -49,7 +49,8 @@ public class SlottedItemProvider extends ContentProvider
                     + "name VARCHAR(255),"
                     + "location VARCHAR(255) DEFAULT '',"
                     + "bonuses TEXT,"
-                    + "additional_properties TEXT"
+                    + "additional_properties TEXT,"
+                    + "character_id VARCHAR(255)"
                     + ");");
         }
 
@@ -185,13 +186,15 @@ public class SlottedItemProvider extends ContentProvider
 
 	static {
         sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-        sUriMatcher.addURI("com.cthos.pfpt.core", "slotted_item", SLOTTED_ITEM);
-        sUriMatcher.addURI("com.cthos.pfpt.core", "slotted_item/#", SLOTTED_ITEM_ID);
+        sUriMatcher.addURI("com.cthos.pfpt.core.slotteditemprovider", "slotted_item", SLOTTED_ITEM);
+        sUriMatcher.addURI("com.cthos.pfpt.core.slotteditemprovider", "slotted_item/#", SLOTTED_ITEM_ID);
         
         slottedItemProjectionMap = new HashMap<String, String>();
         slottedItemProjectionMap.put("_id", "_id");
         slottedItemProjectionMap.put("name", "name");
+        slottedItemProjectionMap.put("location", "location");
         slottedItemProjectionMap.put("bonuses", "bonuses");
         slottedItemProjectionMap.put("additional_properties", "additional_properties");
+        slottedItemProjectionMap.put("character_id", "character_id");
     }
 }

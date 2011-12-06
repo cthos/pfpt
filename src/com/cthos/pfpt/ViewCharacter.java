@@ -20,6 +20,8 @@ public class ViewCharacter extends Activity
 {
 	protected com.cthos.pfpt.core.Character character;
 	
+	long characterId;
+	
 	public static final int MENU_ITEM_INVENTORY = 0;
 	public static final int MENU_ITEM_ABILITIES = 1;
 	public static final int MENU_ITEM_SKILLS = 2;
@@ -30,7 +32,8 @@ public class ViewCharacter extends Activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.view_character);
         
-        long characterId = getIntent().getLongExtra("characterId", 0);
+        long charId = getIntent().getLongExtra("characterId", 0);
+        characterId = charId;
         
         Log.d("", String.valueOf(characterId));
         
@@ -150,6 +153,8 @@ public class ViewCharacter extends Activity
     		default:
     			return false;
     	}
+    	
+    	intent.putExtra("characterId", characterId);
     	
     	startActivity(intent);
     	
