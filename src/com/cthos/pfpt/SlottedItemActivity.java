@@ -20,6 +20,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -37,6 +38,10 @@ public class SlottedItemActivity extends ListActivity
 {
 	private final int ITEM_BONUSES_DIALOG = 1;
 	
+	public static final int MENU_ITEM_ADD_SLOTTED_ITEM = 1;
+	
+	public long characterId;
+	
 	protected SlottedItem _currentItem;
 	
 	private static final String[] PROJECTION = new String[] {
@@ -49,11 +54,14 @@ public class SlottedItemActivity extends ListActivity
 	public void onCreate(Bundle SavedInstanceState)
 	{
 		super.onCreate(SavedInstanceState);
+		
+		characterId = getIntent().getLongExtra("characterId", 0);
+		
 		Cursor cursor = managedQuery(
 		Uri.parse("content://com.cthos.pfpt.core.slotteditemprovider/slotted_item"),
 			PROJECTION,
-		 	null,
-		 	null,
+		 	"character_id = ?",
+		 	new String[]{String.valueOf(characterId)},
 		    "location ASC"
 	    );
 		
@@ -65,6 +73,33 @@ public class SlottedItemActivity extends ListActivity
         setListAdapter(adapter);
         registerForContextMenu(getListView());
 	}
+	
+	@Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        
+        menu.add(0, MENU_ITEM_ADD_SLOTTED_ITEM, 0, "Add Slotted Item")
+                .setShortcut('1', 'i')
+                .setIcon(android.R.drawable.ic_menu_add);
+        
+        return true;
+    }
+	
+	@Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+		Intent i = new Intent();
+		
+		switch (item.getItemId()) {
+			case MENU_ITEM_ADD_SLOTTED_ITEM:
+				i.setClass(this, AddSlottedItemActivity.class);
+				i.putExtra("characterId", characterId);
+			break;
+		}
+		
+		startActivity(i);
+		return true;
+    }
 	
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id)
@@ -153,4 +188,16 @@ public class SlottedItemActivity extends ListActivity
     		removeDialog(ITEM_BONUSES_DIALOG);
     	}
     };
+    
+    @Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+	    if (keyCode == KeyEvent.KEYCODE_BACK) {
+	        Intent backIntent = new Intent().setClass(this, ViewCharacter.class);
+	        backIntent.putExtra("characterId", characterId);
+	        
+	        startActivity(backIntent);
+	        return true;
+	    }
+	    return super.onKeyDown(keyCode, event);
+	}
 }
