@@ -116,6 +116,8 @@ public class SlottedItemActivity extends ListActivity
         
         startManagingCursor(c);
         
+        c.moveToFirst();
+        
         _currentItem = new SlottedItem(c);
         
         showDialog(ITEM_BONUSES_DIALOG);

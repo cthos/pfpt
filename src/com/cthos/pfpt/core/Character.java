@@ -3,7 +3,11 @@
  */
 package com.cthos.pfpt.core;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.database.Cursor;
 import android.net.Uri;
@@ -11,6 +15,7 @@ import android.util.Log;
 
 import com.cthos.db.CharacterProvider;
 import com.cthos.pfpt.core.ArmorClass;
+import com.cthos.pfpt.equipment.SlottedItem;
 
 /**
  * @author cthos
@@ -23,6 +28,8 @@ public class Character
 	public String name;
 	
 	public HashMap<String, Number> attributes = new HashMap();
+	
+	public HashMap<String, Number> modifiedAttributes;
 	
 	public long ac;
 	
@@ -37,6 +44,8 @@ public class Character
 	public Number meleeToHit;
 	
 	public String languages;
+	
+	protected ArrayList<SlottedItem> gear;
 	
 	public Character(Cursor c)
 	{
@@ -56,8 +65,18 @@ public class Character
 		this.attributes.put("intelligence", c.getInt(c.getColumnIndex("intelligence")));
 		this.attributes.put("charisma", c.getInt(c.getColumnIndex("charisma")));
 		
+		this.modifiedAttributes = this.attributes;
+		
 		// TODO: Modify attrs by magic gear, etc. 
 		this.calculateAC();
+	}
+	
+	public void setGear(ArrayList<SlottedItem> gear)
+	{
+		Log.d("Gear", "Setting Gear");
+		this.gear = gear;
+		
+		Log.d("Gear", "Gear count " + String.valueOf(gear.size()));
 	}
 	
 	public long calculateAC()
@@ -66,16 +85,44 @@ public class Character
 		
 		long dexBonus = this.calculateBonus(this.attributes.get("dexterity"));
 		
-		// TODO: Figure in Armour Max Dex Bonus + Armor bonus
-		long armor = 0;
-		long deflection = 0;
-		long dodge = 0;
+		HashMap<String, Number> gearMap = getGearMap("AC"); 
 		
-		long AC = baseAC + dexBonus + armor + deflection + dodge;
+		// TODO: Figure in Armour Max Dex Bonus + Armor bonus
+		long AC = baseAC;
+		
+		for (String key : gearMap.keySet()) {
+			AC += gearMap.get(key).longValue();
+		}
 		
 		this.ac = AC;
 		
+		Log.d("AC Bonus", String.valueOf(AC));
+		
 		return this.ac;
+	}
+	
+	public void gearUpdateAttributes()
+	{
+		for (String key : attributes.keySet()) {
+			int attMod = 0;
+			int newVal = attributes.get(key).intValue();
+			
+			attMod = getGearAttributeValue(key);
+			this.modifiedAttributes.put(key, newVal + attMod);
+		}
+	}
+	
+	public int getGearAttributeValue(String toWhat)
+	{
+		int attMod = 0;
+		
+		HashMap<String, Number> gearMap = getGearMap(toWhat);
+		
+		for (String key : gearMap.keySet()) {
+			attMod += gearMap.get(key).longValue();
+		}
+		
+		return attMod;
 	}
 	
 	/**
@@ -93,5 +140,58 @@ public class Character
 		}
 				
 		return (long) rawScore;
+	}
+	
+	protected HashMap<String, Number> getGearMap(String toWhat)
+	{
+		HashMap<String, Number> gearMap = new HashMap<String, Number>(); 
+		
+		toWhat = toWhat.toLowerCase();
+		
+		if (this.gear != null) {
+			int gearLen = this.gear.size();
+			
+			for (int i = 0; i < gearLen; i++) {
+				SlottedItem g = this.gear.get(i);
+				ArrayList<JSONObject> bonusL = new ArrayList<JSONObject>();
+				bonusL = g.getBonuses(toWhat);
+				int lSize = bonusL.size();
+				
+				if (lSize <= 0) {
+					continue;
+				}
+				
+				for (int j = 0; j < lSize; j++) {
+					JSONObject bonus = bonusL.get(j);
+					try {
+						String type = bonus.getString("name").toLowerCase();
+						long amt = bonus.getLong("howMuch");
+						
+						long typeBonus = 0;
+						
+						if (gearMap.containsKey(type)) {
+							typeBonus = gearMap.get(type).longValue();
+						}
+						
+						Log.d("TypeBonus", String.valueOf(typeBonus));
+						
+						if (type == "dodge" || type == "untyped") {
+							amt = amt + typeBonus;
+						}
+						
+						if (typeBonus == 0 || typeBonus < amt) {
+							Log.d("typeBonus", "Setting " + type + " to " + String.valueOf(typeBonus));
+							typeBonus = amt;
+							gearMap.put(type, typeBonus);
+						}
+						
+					} catch (JSONException e) {
+						Log.d("Fail", e.getMessage());
+					}
+				}
+			}
+		}
+		
+		return gearMap;
 	}
 }
