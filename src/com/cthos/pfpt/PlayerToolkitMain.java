@@ -1,9 +1,14 @@
 package com.cthos.pfpt;
 
+import com.cthos.pfpt.core.CharacterClass;
+import com.cthos.pfpt.core.chr.Barbarian;
+import com.cthos.pfpt.core.chr.CharacterClassFactory;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.*;
 
 public class PlayerToolkitMain extends Activity {

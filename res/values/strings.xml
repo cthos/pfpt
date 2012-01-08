@@ -100,7 +100,30 @@
     	<item>Wisdom</item>
     	<item>Charisma</item>
     </string-array>
-        <string name="edit">Edit</string>
-        <string name="delete">Delete</string>
+    <string-array name="character_class_array">
+    	<item>Alchemist</item>
+    	<item>Barbarian</item>
+    	<item>Bard</item>
+    	<item>Cavalier</item>
+    	<item>Cleric</item>
+    	<item>Druid</item>
+    	<item>Fighter</item>
+    	<item>Gunslinger</item>
+    	<item>Inquisitor</item>
+    	<item>Magus</item>
+    	<item>Monk</item>
+    	<item>Ninja</item>
+    	<item>Oracle</item>
+    	<item>Paladin</item>
+    	<item>Ranger</item>
+    	<item>Rogue</item>
+    	<item>Samurai</item>
+    	<item>Sorcerer</item>
+    	<item>Summoner</item>
+    	<item>Witch</item>
+    	<item>Wizard</item>
+    </string-array>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
     
 </resources>

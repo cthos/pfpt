@@ -14,11 +14,14 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.cthos.pfpt.core.CharacterClass;
+import com.cthos.pfpt.core.chr.CharacterClassFactory;
 import com.cthos.pfpt.equipment.SlottedItem;
 
 public class ViewCharacter extends Activity
@@ -31,6 +34,7 @@ public class ViewCharacter extends Activity
 	public static final int MENU_ITEM_ABILITIES = 1;
 	public static final int MENU_ITEM_SKILLS = 2;
 	public static final int MENU_ITEM_EFFECTS = 3;
+	public static final int MENU_ITEM_MANAGE_CHARACTER = 4;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -68,6 +72,7 @@ public class ViewCharacter extends Activity
         );
         
         new LoadGearTask().execute(new Long(characterId));
+        new LoadCharacterClassTask().execute(new Long(characterId));
         
         startManagingCursor(c);
         startManagingCursor(slottedC);
@@ -127,6 +132,30 @@ public class ViewCharacter extends Activity
 		acval.setText(String.valueOf(this.character.ac));
 	}
 	
+	protected void populateHP()
+	{
+		TextView hpval = (TextView) findViewById(R.id.hp_value);
+		hpval.setText(String.valueOf(this.character.hp));
+	}
+	
+	protected void populateAttacks()
+	{
+		TextView babval = (TextView) findViewById(R.id.bab_value);
+		babval.setText(String.valueOf(this.character.bab));
+		
+		TextView meleeval = (TextView) findViewById(R.id.melee_value);
+		meleeval.setText(String.valueOf(this.character.meleeToHit));
+		
+		TextView rangedval = (TextView) findViewById(R.id.ranged_value);
+		rangedval.setText(String.valueOf(this.character.rangedToHit));
+		
+		TextView cmdval = (TextView) findViewById(R.id.cmd_value);
+		cmdval.setText(String.valueOf(this.character.cmd));
+		
+		TextView cmbval = (TextView) findViewById(R.id.cmb_value);
+		cmbval.setText(String.valueOf(this.character.cmb));
+	}
+	
 	/**
 	 * Create the options menu. Add things like Manage Gear, Spell Book, Effects
 	 * etc.
@@ -146,8 +175,11 @@ public class ViewCharacter extends Activity
         menu.add(2, MENU_ITEM_SKILLS, 0, "Skills")
         	.setIcon(android.R.drawable.ic_menu_directions);
         
-        menu.add(2, MENU_ITEM_EFFECTS, 0, "Effects")
-    		.setIcon(android.R.drawable.ic_menu_add);
+        menu.add(3, MENU_ITEM_EFFECTS, 0, "Effects")
+        .setIcon(android.R.drawable.ic_menu_add);
+        
+        menu.add(4, MENU_ITEM_MANAGE_CHARACTER, 0, "Manage Character")
+    		.setIcon(android.R.drawable.ic_menu_save);
         
         Intent intent = new Intent(null, getIntent().getData());
         intent.addCategory(Intent.CATEGORY_ALTERNATIVE);
@@ -165,6 +197,9 @@ public class ViewCharacter extends Activity
     	switch (item.getItemId()) {
     		case MENU_ITEM_INVENTORY:
     			intent.setClassName("com.cthos.pfpt", "com.cthos.pfpt.InventoryActivity");
+    			break;
+    		case MENU_ITEM_MANAGE_CHARACTER:
+    			intent.setClass(this, ManageCharacterActivity.class);
     			break;
     		default:
     			return false;
@@ -187,10 +222,20 @@ public class ViewCharacter extends Activity
     	populateAttributes();
     }
     
+    protected void classesLoaded(ArrayList<CharacterClass> clss)
+    {
+    	Log.d("classes", "Character Classes Loaded");
+    	this.character.setClasses(clss);
+    	this.character.calculateHP();
+    	this.character.calculateAttacks();
+    	populateHP();
+    	populateAttacks();
+    }
+    
     private class LoadGearTask extends AsyncTask<Number, Void, ArrayList<SlottedItem>>
     {
     	@Override
-    	protected ArrayList doInBackground(Number... characterId)
+    	protected ArrayList<SlottedItem> doInBackground(Number... characterId)
     	{
     		ArrayList<SlottedItem> items = new ArrayList<SlottedItem>();
     		
@@ -219,4 +264,56 @@ public class ViewCharacter extends Activity
     		gearLoaded(items);
     	}
     }
+    
+	private class LoadCharacterClassTask extends AsyncTask<Number, Void, ArrayList<CharacterClass>>
+    {
+    	@Override
+    	protected ArrayList<CharacterClass> doInBackground(Number... characterId)
+    	{
+    		ArrayList<CharacterClass> charClasses = new ArrayList<CharacterClass>();
+    		
+    		Cursor cursor = managedQuery(
+	    		Uri.parse("content://com.cthos.pfpt.core.characterclasslevelprovider/character_class_level"),
+				null,
+			 	"character_id = ?",
+			 	new String[]{String.valueOf(characterId[0])},
+			    "_id ASC"
+	        );
+    		
+    		cursor.moveToFirst();
+    		
+    		String className;
+    		String numLevels;
+    		
+            while (!cursor.isAfterLast()) {            	
+            	className = cursor.getString(cursor.getColumnIndex("class_name"));
+            	numLevels = cursor.getString(cursor.getColumnIndex("num_levels"));
+            	
+            	CharacterClass cl = CharacterClassFactory.factory(className);
+            	cl.setNumLevels(Integer.parseInt(numLevels));
+            	charClasses.add(cl);
+            	
+            	cursor.moveToNext();
+            }
+            
+            return charClasses;
+    	}
+	
+    	@Override
+    	protected void onPostExecute(ArrayList<CharacterClass> characterClasses)
+    	{
+    		classesLoaded(characterClasses);
+    	}
+    }
+    
+    @Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+	    if (keyCode == KeyEvent.KEYCODE_BACK) {
+	        Intent backIntent = new Intent().setClass(this, PlayerToolkitMain.class);
+	        
+	        startActivity(backIntent);
+	        return true;
+	    }
+	    return super.onKeyDown(keyCode, event);
+	} 
 }

@@ -33,19 +33,25 @@ public class Character
 	
 	public long ac;
 	
-	public Number bab;
+	public long hp;
+	
+	public long currentHp;
+	
+	public long bab;
 	
 	public Number cmd;
 	
 	public Number cmb;
 	
-	public Number rangedToHit;
+	public long rangedToHit;
 	
-	public Number meleeToHit;
+	public long meleeToHit;
 	
 	public String languages;
 	
 	protected ArrayList<SlottedItem> gear;
+	
+	protected ArrayList<CharacterClass> characterClasses;
 	
 	public Character(Cursor c)
 	{
@@ -79,6 +85,12 @@ public class Character
 		Log.d("Gear", "Gear count " + String.valueOf(gear.size()));
 	}
 	
+	public void setClasses(ArrayList<CharacterClass> characterClasses)
+	{
+		Log.d("CharClasses", "Loading Character Classes");
+		this.characterClasses = characterClasses;
+	}
+	
 	public long calculateAC()
 	{
 		long baseAC = 10;
@@ -88,7 +100,7 @@ public class Character
 		HashMap<String, Number> gearMap = getGearMap("AC"); 
 		
 		// TODO: Figure in Armour Max Dex Bonus + Armor bonus
-		long AC = baseAC;
+		long AC = baseAC + dexBonus;
 		
 		for (String key : gearMap.keySet()) {
 			AC += gearMap.get(key).longValue();
@@ -99,6 +111,59 @@ public class Character
 		Log.d("AC Bonus", String.valueOf(AC));
 		
 		return this.ac;
+	}
+	
+	public long calculateHP()
+	{
+		long conBonus = this.calculateBonus(this.attributes.get("constitution"));
+		
+		long baseHP = conBonus;
+		
+		int classLen = this.characterClasses.size();
+		CharacterClass cl;
+		double hpbeep;
+		
+		for (int i = 0; i < classLen; i++) {
+			cl = this.characterClasses.get(i);
+			
+			if (i == 0) {
+				baseHP += cl.hitDie;
+				continue;
+			}
+			
+			Log.d("HP", String.valueOf(baseHP));
+			
+			hpbeep = Math.ceil(cl.hitDie/2);
+			baseHP += (int) hpbeep;
+		}
+		
+		this.hp = this.currentHp = baseHP;
+		
+		return baseHP;
+	}
+	
+	public void calculateAttacks()
+	{
+		long bab = 0;
+		
+		int classLen = this.characterClasses.size();
+		CharacterClass cl;
+		
+		for (int i = 0; i < classLen; i++) {
+			cl = this.characterClasses.get(i);
+			bab += cl.getBAB();
+		}
+		
+		this.bab = bab;
+		long dexBonus = this.calculateBonus(this.attributes.get("dexterity"));
+		long strBonus = this.calculateBonus(this.attributes.get("strength"));
+		
+		this.rangedToHit = bab + dexBonus;
+		this.meleeToHit = bab + strBonus;
+		
+		//TODO: Remember to add in Size and Misc bonuses.
+		this.cmb = bab + strBonus;
+		this.cmd = 10 + bab + strBonus + dexBonus;
 	}
 	
 	public void gearUpdateAttributes()

@@ -55,7 +55,20 @@
             	<category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+        <activity android:enabled="true" android:name="ManageCharacterActivity">
+            <intent-filter>
+            	<action android:name="com.cthos.pfpt.MANAGE_CHARACTER_ACTIVITY" />
+            	<category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity android:enabled="true" android:name="CharacterLevelActivity">
+            <intent-filter>
+            	<action android:name="com.cthos.pfpt.CHARACTER_LEVEL_ACTIVITY" />
+            	<category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
         <provider android:authorities="com.cthos.pfpt.core" android:name="com.cthos.db.CharacterProvider"></provider>
         <provider android:authorities="com.cthos.pfpt.core.slotteditemprovider" android:name="com.cthos.db.SlottedItemProvider"></provider>
+        <provider android:authorities="com.cthos.pfpt.core.characterclasslevelprovider" android:name="com.cthos.db.CharacterClassLevelProvider"></provider>
     </application>
 </manifest>

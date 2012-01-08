@@ -16,19 +16,15 @@ import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
 
-public class SlottedItemProvider extends ContentProvider
+public class CharacterClassLevelProvider extends ContentProvider
 {
-	public static final String AUTHORITY = "com.cthos.pfpt.core";
+	private static final String DATABASE_NAME = "character_class_level.db";
+    private static final String CHARACTER_CLASS_LEVEL_TABLE_NAME = "character_class_level";
 	
-	private static final String TAG = "SlottedItemProvider";
-
-    private static final String DATABASE_NAME = "slotted_items.db";
-    private static final String SLOTTED_ITEM_TABLE_NAME = "slotted_items";
-    
-    private static final int SLOTTED_ITEM = 1;
-    private static final int SLOTTED_ITEM_ID = 2;
-    
-    private static HashMap<String, String> slottedItemProjectionMap;
+	protected static final int CHARACTER_CLASS_LEVEL = 1;
+	protected static final int CHARACTER_CLASS_LEVEL_ID = 2;
+	
+	private static HashMap<String, String> characterLevelProjectionMap;
     
     private static final UriMatcher sUriMatcher;
 
@@ -43,21 +39,19 @@ public class SlottedItemProvider extends ContentProvider
 
         @Override
         public void onCreate(SQLiteDatabase db) {
-            db.execSQL("CREATE TABLE " + SLOTTED_ITEM_TABLE_NAME + " ("
+            db.execSQL("CREATE TABLE " + CHARACTER_CLASS_LEVEL_TABLE_NAME + " ("
                     + "_id INTEGER PRIMARY KEY,"
-                    + "name VARCHAR(255),"
-                    + "location VARCHAR(255) DEFAULT '',"
-                    + "bonuses TEXT,"
-                    + "additional_properties TEXT,"
+                    + "class_name VARCHAR(255),"
+                    + "num_levels VARCHAR(10),"
                     + "character_id VARCHAR(255)"
                     + ");");
         }
 
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-            Log.w(TAG, "Upgrading database from version " + oldVersion + " to "
+            Log.w("CharacterClassLevel", "Upgrading database from version " + oldVersion + " to "
                     + newVersion + ", which will destroy all old data");
-            db.execSQL("DROP TABLE IF EXISTS " + SLOTTED_ITEM_TABLE_NAME);
+            db.execSQL("DROP TABLE IF EXISTS " + CHARACTER_CLASS_LEVEL_TABLE_NAME);
             onCreate(db);
         }
     }
@@ -65,8 +59,9 @@ public class SlottedItemProvider extends ContentProvider
     private DatabaseHelper mOpenHelper;
     
     @Override
-	public boolean onCreate() {
-    	mOpenHelper = new DatabaseHelper(getContext());
+	public boolean onCreate()
+    {
+		mOpenHelper = new DatabaseHelper(getContext());
         return true;
 	}
     
@@ -75,13 +70,13 @@ public class SlottedItemProvider extends ContentProvider
 		SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         int count;
         switch (sUriMatcher.match(uri)) {
-        case SLOTTED_ITEM:
-            count = db.delete(SLOTTED_ITEM_TABLE_NAME, where, whereArgs);
+        case CHARACTER_CLASS_LEVEL:
+            count = db.delete(CHARACTER_CLASS_LEVEL_TABLE_NAME, where, whereArgs);
             break;
-        case SLOTTED_ITEM_ID:
+        case CHARACTER_CLASS_LEVEL_ID:
         	long id = ContentUris.parseId(uri);
         	String[] idAr = {String.valueOf(id)};
-        	count = db.delete(SLOTTED_ITEM_TABLE_NAME, "_ID = ?", idAr);
+        	count = db.delete(CHARACTER_CLASS_LEVEL_TABLE_NAME, "_ID = ?", idAr);
         	break;
         default:
             throw new IllegalArgumentException("Unknown URI " + uri);
@@ -94,19 +89,18 @@ public class SlottedItemProvider extends ContentProvider
 	@Override
 	public String getType(Uri uri) {
 		 switch (sUriMatcher.match(uri)) {
-	        case SLOTTED_ITEM:
-	        case SLOTTED_ITEM_ID:
-	        	return "vnd.android.cursor.dir/vnd.pfpt.slotted_item";
+	        case CHARACTER_CLASS_LEVEL:
+	        case CHARACTER_CLASS_LEVEL_ID:
+	        	return "vnd.android.cursor.dir/vnd.pfpt.character_class_level";
 
 	        default:
 	            throw new IllegalArgumentException("Unknown URI " + uri);
-	        }
+		 }
 	}
 
 	@Override
 	public Uri insert(Uri uri, ContentValues initialValues) {
-		 // Validate the requested uri
-        if (sUriMatcher.match(uri) != SLOTTED_ITEM) {
+		if (sUriMatcher.match(uri) != CHARACTER_CLASS_LEVEL) {
             throw new IllegalArgumentException("Unknown URI " + uri);
         }
 
@@ -119,7 +113,7 @@ public class SlottedItemProvider extends ContentProvider
         }
 
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
-        long rowId = db.insert(SLOTTED_ITEM_TABLE_NAME, "character", values);
+        long rowId = db.insert(CHARACTER_CLASS_LEVEL_TABLE_NAME, "character", values);
         if (rowId > 0) {
             Uri charUri = ContentUris.withAppendedId(com.cthos.pfpt.core.Character.CONTENT_URI, rowId);
             getContext().getContentResolver().notifyChange(charUri, null);
@@ -133,13 +127,13 @@ public class SlottedItemProvider extends ContentProvider
 	public Cursor query(Uri uri, String[] projection, String selection,
 			String[] selectionArgs, String sortOrder) {
 		SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
-        qb.setTables(SLOTTED_ITEM_TABLE_NAME);
+        qb.setTables(CHARACTER_CLASS_LEVEL_TABLE_NAME);
 
         switch (sUriMatcher.match(uri)) {
-        case SLOTTED_ITEM:
-            qb.setProjectionMap(slottedItemProjectionMap);
+        case CHARACTER_CLASS_LEVEL:
+            qb.setProjectionMap(characterLevelProjectionMap);
             break;
-        case SLOTTED_ITEM_ID:
+        case CHARACTER_CLASS_LEVEL_ID:
         	selection = "_ID = ?";
         	long id = ContentUris.parseId(uri);
         	selectionArgs = new String[] {String.valueOf(id)};
@@ -171,8 +165,8 @@ public class SlottedItemProvider extends ContentProvider
 		SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         int count;
         switch (sUriMatcher.match(uri)) {
-        case SLOTTED_ITEM:
-            count = db.update(SLOTTED_ITEM_TABLE_NAME, values, where, whereArgs);
+        case CHARACTER_CLASS_LEVEL:
+            count = db.update(CHARACTER_CLASS_LEVEL_TABLE_NAME, values, where, whereArgs);
             break;
 
         default:
@@ -185,15 +179,13 @@ public class SlottedItemProvider extends ContentProvider
 
 	static {
         sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-        sUriMatcher.addURI("com.cthos.pfpt.core.slotteditemprovider", "slotted_item", SLOTTED_ITEM);
-        sUriMatcher.addURI("com.cthos.pfpt.core.slotteditemprovider", "slotted_item/#", SLOTTED_ITEM_ID);
+        sUriMatcher.addURI("com.cthos.pfpt.core.characterclasslevelprovider", "character_class_level", CHARACTER_CLASS_LEVEL);
+        sUriMatcher.addURI("com.cthos.pfpt.core.characterclasslevelprovider", "character_class_level/#", CHARACTER_CLASS_LEVEL_ID);
         
-        slottedItemProjectionMap = new HashMap<String, String>();
-        slottedItemProjectionMap.put("_id", "_id");
-        slottedItemProjectionMap.put("name", "name");
-        slottedItemProjectionMap.put("location", "location");
-        slottedItemProjectionMap.put("bonuses", "bonuses");
-        slottedItemProjectionMap.put("additional_properties", "additional_properties");
-        slottedItemProjectionMap.put("character_id", "character_id");
+        characterLevelProjectionMap = new HashMap<String, String>();
+        characterLevelProjectionMap.put("_id", "_id");
+        characterLevelProjectionMap.put("class_name", "class_name");
+        characterLevelProjectionMap.put("num_levels", "num_levels");
+        characterLevelProjectionMap.put("character_id", "character_id");
     }
 }
