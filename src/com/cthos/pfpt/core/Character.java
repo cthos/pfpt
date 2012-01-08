@@ -133,7 +133,7 @@ public class Character
 			
 			Log.d("HP", String.valueOf(baseHP));
 			
-			hpbeep = Math.ceil(cl.hitDie/2);
+			hpbeep = Math.ceil(cl.hitDie/2) * cl.numLevels + conBonus;
 			baseHP += (int) hpbeep;
 		}
 		
@@ -158,8 +158,16 @@ public class Character
 		long dexBonus = this.calculateBonus(this.attributes.get("dexterity"));
 		long strBonus = this.calculateBonus(this.attributes.get("strength"));
 		
-		this.rangedToHit = bab + dexBonus;
-		this.meleeToHit = bab + strBonus;
+		long atbonus = 0;
+		
+		HashMap<String, Number> gearMap = getGearMap("Attack"); 
+		
+		for (String key : gearMap.keySet()) {
+			atbonus += gearMap.get(key).longValue();
+		}
+		
+		this.rangedToHit = bab + dexBonus + atbonus;
+		this.meleeToHit = bab + strBonus + atbonus;
 		
 		//TODO: Remember to add in Size and Misc bonuses.
 		this.cmb = bab + strBonus;

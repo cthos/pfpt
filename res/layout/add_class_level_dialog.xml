@@ -26,7 +26,7 @@
                 android:id="@+id/add_levels_class_num_classes"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Num Classes"
+                android:text="Levels"
                 android:layout_weight="0.05" android:gravity="center_vertical" />
 
         </LinearLayout>
