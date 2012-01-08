@@ -133,8 +133,9 @@ public class Character
 			
 			Log.d("HP", String.valueOf(baseHP));
 			
-			hpbeep = Math.ceil(cl.hitDie/2) * cl.numLevels + conBonus;
-			baseHP += (int) hpbeep;
+			// Uses Pathfinder Society HP rules for the moment.
+			hpbeep = (Math.ceil(cl.hitDie/2) + 1) * cl.numLevels + (conBonus * cl.numLevels);
+			baseHP += hpbeep;
 		}
 		
 		this.hp = this.currentHp = baseHP;
