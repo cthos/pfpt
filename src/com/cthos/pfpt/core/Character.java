@@ -143,6 +143,29 @@ public class Character
 		return baseHP;
 	}
 	
+	/**
+	 * Sets the current hp value. Need to have some
+	 * way of tracking temporary hp, though.
+	 * 
+	 * Returns false if you gave it too many hit points.
+	 * Otherwise returns true
+	 * 
+	 * @param hpVal
+	 * 
+	 * @return Boolean
+	 */
+	public Boolean setCurrentHP(long hpVal)
+	{
+		if (hpVal > this.hp) {
+			this.currentHp = this.hp;
+			return false;
+		}
+		
+		this.currentHp = hpVal;
+		
+		return true;
+	}
+	
 	public void calculateAttacks()
 	{
 		long bab = 0;

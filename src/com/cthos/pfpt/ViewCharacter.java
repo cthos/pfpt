@@ -3,21 +3,32 @@ package com.cthos.pfpt;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.ComponentName;
 import android.content.ContentProvider;
 import android.content.ContentProviderClient;
 import android.content.ContentResolver;
 import android.content.ContentUris;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.cthos.pfpt.core.CharacterClass;
@@ -36,6 +47,11 @@ public class ViewCharacter extends Activity
 	public static final int MENU_ITEM_EFFECTS = 3;
 	public static final int MENU_ITEM_MANAGE_CHARACTER = 4;
 	
+	public static final int DIALOG_CHANGE_HP = 1;
+	
+	protected String addOrRemoveStr;
+	protected int addRemoveHPAmount = 0;
+	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,6 +65,15 @@ public class ViewCharacter extends Activity
         loadCharacterData(characterId);
     }
 	
+	/**
+	 * Summons up the current character data. Tries to do it
+	 * in background threads for the more complicated bits.
+	 * 
+	 * Though the main character table loads on the UI thread,
+	 * so you have something to show initially.
+	 * 
+	 * @param characterId
+	 */
 	protected void loadCharacterData(long characterId)
 	{
 		Uri chUri = ContentUris.withAppendedId(
@@ -90,8 +115,24 @@ public class ViewCharacter extends Activity
 	}
 	
 	/**
+	 * Sets the on click actions for the damage and
+	 * healing buttons.
+	 * 
+	 * @return void
+	 */
+	protected void _initHPButtons()
+	{
+		Button addHP = (Button) findViewById(R.id.healing_button);
+		addHP.setOnClickListener(handleAddHPClicked);
+		
+		Button removeHP = (Button) findViewById(R.id.damage_button);
+		removeHP.setOnClickListener(handleRemoveHPClicked);
+	}
+	
+	/**
 	 * Populates everything in the attributes fields.
 	 * 
+	 * @return void
 	 */
 	protected void populateAttributes()
 	{
@@ -126,18 +167,46 @@ public class ViewCharacter extends Activity
 		chaval.setText(cha_value.toString() + " (" + String.valueOf(chaBonus) + ")");
 	}
 	
+	/**
+	 * Updates the Text view for AC value.
+	 * 
+	 * @return void
+	 */
 	protected void populateAC()
 	{
 		TextView acval = (TextView) findViewById(R.id.ac_value);
 		acval.setText(String.valueOf(this.character.ac));
 	}
 	
+	/**
+	 * Updates the text View for the HP value. Should be called when
+	 * HP changes.
+	 * 
+	 * @return void
+	 */
 	protected void populateHP()
 	{
+		Log.d("HP Changes", "Setting HP to " + String.valueOf(this.character.currentHp));
+		
 		TextView hpval = (TextView) findViewById(R.id.hp_value);
-		hpval.setText(String.valueOf(this.character.hp));
+		hpval.setText(String.valueOf(this.character.currentHp));
+		
+		if (this.character.currentHp < 0) {
+			hpval.setTextColor(Color.RED);
+		} else if (this.character.currentHp == 0) {
+			hpval.setTextColor(Color.YELLOW);
+		} else if (this.character.currentHp == this.character.hp) {
+			hpval.setTextColor(Color.GREEN);
+		} else {
+			hpval.setTextColor(Color.WHITE);
+		}
 	}
 	
+	/**
+	 * Updates the text views for all of the attack values.
+	 * 
+	 * @return void
+	 */
 	protected void populateAttacks()
 	{
 		TextView babval = (TextView) findViewById(R.id.bab_value);
@@ -212,6 +281,28 @@ public class ViewCharacter extends Activity
     	return true;
     }
     
+    /**
+     * Called after the HP dialog is changed, updates the 
+     * interface on its own.
+     * 
+     * @return void
+     */
+    protected void handleHPChanged()
+    {
+    	long newHP = 0;
+    	
+    	if (addOrRemoveStr.equals("add")) {
+    		newHP = this.character.currentHp + addRemoveHPAmount;
+    	} else {
+    		newHP = this.character.currentHp - addRemoveHPAmount;
+    	}
+    	
+    	Log.d("Hp changes", String.valueOf(newHP));
+    	
+    	this.character.setCurrentHP(newHP);
+    	populateHP();
+    }
+    
     protected void gearLoaded(ArrayList<SlottedItem> gear)
     {
     	Log.d("gear", "Gear Loaded");
@@ -222,6 +313,13 @@ public class ViewCharacter extends Activity
     	populateAttributes();
     }
     
+    /**
+     * Handles what happens when the background thread is finished
+     * loading the character's classes. Mostly it'll calculate HP
+     * and base attack bonuses for you.
+     * 
+     * @param clss
+     */
     protected void classesLoaded(ArrayList<CharacterClass> clss)
     {
     	Log.d("classes", "Character Classes Loaded");
@@ -230,7 +328,60 @@ public class ViewCharacter extends Activity
     	this.character.calculateAttacks();
     	populateHP();
     	populateAttacks();
+    	
+    	// Turn on the HP tracking buttons.
+    	_initHPButtons();
     }
+    
+    /**
+     * Called when a dialog is called to be summoned.
+     * 
+     * @param int did
+     * 
+     * @return Dialog
+     */
+    protected Dialog onCreateDialog(int did)
+	{
+		AlertDialog dialog;
+		
+		switch (did) {
+			case DIALOG_CHANGE_HP:
+			default:
+				dialog = _initHPChangeDialog();
+				break;
+		}
+		
+		return dialog;
+	}
+    
+    /**
+     * Inits the dialog to be able to alter your current HP
+     * 
+     * @return Dialog
+     */
+    protected AlertDialog _initHPChangeDialog()
+	{
+		LayoutInflater inflater = LayoutInflater.from(this);
+		final View custom_view = inflater.inflate(R.layout.add_remove_health, null);
+		
+		final EditText howMuch = (EditText) custom_view.findViewById(R.id.add_remove_health_amount);
+		
+		AlertDialog dialog = new AlertDialog.Builder(this).setTitle(this.addOrRemoveStr + " HP")
+                              .setView(custom_view)
+                              .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+								
+								public void onClick(DialogInterface dialog, int which) {
+									addRemoveHPAmount = Integer.parseInt(howMuch.getText().toString());
+									howMuch.setText("");
+									handleHPChanged();
+									
+									dialog.cancel();
+								}
+							})
+							.setNegativeButton("Cancel", null).create();
+		
+		return dialog;
+	}
     
     private class LoadGearTask extends AsyncTask<Number, Void, ArrayList<SlottedItem>>
     {
@@ -315,5 +466,25 @@ public class ViewCharacter extends Activity
 	        return true;
 	    }
 	    return super.onKeyDown(keyCode, event);
-	} 
+	}
+    
+    /**
+     * Called when the add hp button is clicked.
+     * 
+     */
+    private OnClickListener handleAddHPClicked = new OnClickListener() {
+    	public void onClick(View v)
+    	{
+    		addOrRemoveStr = "add";
+    		showDialog(DIALOG_CHANGE_HP);
+    	}
+    };
+    
+    private OnClickListener handleRemoveHPClicked = new OnClickListener() {
+    	public void onClick(View v)
+    	{
+    		addOrRemoveStr = "remove";
+    		showDialog(DIALOG_CHANGE_HP);
+    	}
+    };
 }
