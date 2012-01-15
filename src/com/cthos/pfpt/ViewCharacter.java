@@ -34,6 +34,7 @@ import android.widget.TextView;
 import com.cthos.pfpt.core.CharacterClass;
 import com.cthos.pfpt.core.chr.CharacterClassFactory;
 import com.cthos.pfpt.equipment.SlottedItem;
+import com.cthos.util.Registry;
 
 public class ViewCharacter extends Activity
 {
@@ -300,6 +301,8 @@ public class ViewCharacter extends Activity
     	Log.d("Hp changes", String.valueOf(newHP));
     	
     	this.character.setCurrentHP(newHP);
+    	Registry reg = Registry.getInstance();
+    	reg.set("currentHP", newHP);
     	populateHP();
     }
     
@@ -326,6 +329,14 @@ public class ViewCharacter extends Activity
     	this.character.setClasses(clss);
     	this.character.calculateHP();
     	this.character.calculateAttacks();
+    	
+    	Registry reg = Registry.getInstance();
+        Object curHp = reg.get("currentHP");
+        if (curHp != null) {
+        	Log.d("HP Change", "Found hp value in memory. Setting.");
+        	this.character.currentHp = Integer.valueOf(curHp.toString());
+        }
+    	
     	populateHP();
     	populateAttacks();
     	

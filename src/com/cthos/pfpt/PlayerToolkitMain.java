@@ -42,4 +42,12 @@ public class PlayerToolkitMain extends Activity {
     {
     	startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://paizo.com/pathfinderRPG/prd/")));
     }
+    
+    @Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+	    if (keyCode == KeyEvent.KEYCODE_BACK) {
+	    	moveTaskToBack(true);
+	    }
+	    return super.onKeyDown(keyCode, event);
+	}
 }

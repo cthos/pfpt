@@ -18,7 +18,7 @@ import com.cthos.pfpt.core.ArmorClass;
 import com.cthos.pfpt.equipment.SlottedItem;
 
 /**
- * @author cthos
+ * @author cthos <daginus@gmail.com>
  *
  */
 public class Character 
