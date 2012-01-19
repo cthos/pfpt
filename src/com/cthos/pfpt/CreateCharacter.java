@@ -30,7 +30,8 @@ public class CreateCharacter extends Activity
 {
 	public final int MENU_ITEM_CANCEL = 2010;
 	
-	public static String lvValue;
+	//This is legacy, should probably kill references to it.
+	public static String lvValue = "0";
 	
 	/**
 	 * The following hold the standard Pathfinder attributes
@@ -92,21 +93,6 @@ public class CreateCharacter extends Activity
     
     private void setUpSpinners()
     {
-    	Spinner lvSpin = (Spinner) findViewById(R.id.levelSpinner);
-    	ArrayAdapter<CharSequence> lvAdapter = ArrayAdapter.createFromResource(
-                this, R.array.character_levels_array, android.R.layout.simple_spinner_item);
-    	lvAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        lvSpin.setAdapter(lvAdapter);
-        
-        lvSpin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-               CreateCharacter.lvValue = parent.getItemAtPosition(pos).toString();
-            }
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
-
-        
         ArrayAdapter<CharSequence> ablAdapter = ArrayAdapter.createFromResource(
                 this, R.array.ability_scores_array, android.R.layout.simple_spinner_item);
         ablAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);

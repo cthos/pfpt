@@ -16,6 +16,7 @@ import android.util.Log;
 import com.cthos.db.CharacterProvider;
 import com.cthos.pfpt.core.ArmorClass;
 import com.cthos.pfpt.equipment.SlottedItem;
+import com.cthos.util.Registry;
 
 /**
  * @author cthos <daginus@gmail.com>
@@ -162,6 +163,9 @@ public class Character
 		}
 		
 		this.currentHp = hpVal;
+		
+		Registry reg = Registry.getInstance();
+    	reg.set("currentHP", this.currentHp);
 		
 		return true;
 	}

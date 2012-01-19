@@ -301,8 +301,6 @@ public class ViewCharacter extends Activity
     	Log.d("Hp changes", String.valueOf(newHP));
     	
     	this.character.setCurrentHP(newHP);
-    	Registry reg = Registry.getInstance();
-    	reg.set("currentHP", newHP);
     	populateHP();
     }
     

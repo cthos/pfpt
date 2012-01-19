@@ -27,8 +27,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
@@ -62,6 +64,11 @@ public class CharacterLevelActivity extends ListActivity
 	{
 		super.onCreate(SavedInstanceState);
 		characterId = getIntent().getLongExtra("characterId", 0);
+
+		setContentView(R.layout.character_level_list);
+		
+		Button addLev = (Button) findViewById(R.id.character_level_list_add_level);
+		addLev.setOnClickListener(handleAddLevel);
 		
 		classLevelCursor = managedQuery(
 		Uri.parse("content://com.cthos.pfpt.core.characterclasslevelprovider/character_class_level"),
@@ -95,30 +102,12 @@ public class CharacterLevelActivity extends ListActivity
 		return dialog;
 	}
 	
-	@Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        super.onCreateOptionsMenu(menu);
-        
-        menu.add(0, MENU_ITEM_ADD_CLASS_LEVELS, 0, "Add Class")
-                .setShortcut('1', 'a')
-                .setIcon(android.R.drawable.ic_menu_add);
-        
-        return true;
-    }
-	
-	@Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-		Intent i = new Intent();
-		
-		switch (item.getItemId()) {
-			case MENU_ITEM_ADD_CLASS_LEVELS:
-	    		showDialog(ADD_CLASS_LEVEL_DIALOG);
-			break;
-		}
-		
-		return true;
-    }
+	private OnClickListener handleAddLevel = new OnClickListener() {
+    	public void onClick(View v)
+    	{
+    		showDialog(ADD_CLASS_LEVEL_DIALOG);
+    	}
+    };
 	
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo)
