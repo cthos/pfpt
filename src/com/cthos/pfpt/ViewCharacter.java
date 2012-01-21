@@ -226,6 +226,18 @@ public class ViewCharacter extends Activity
 		cmbval.setText(String.valueOf(this.character.cmb));
 	}
 	
+	protected void populateSaves()
+	{
+		TextView fortVal = (TextView) findViewById(R.id.fort_save_value);
+		fortVal.setText(String.valueOf(this.character.modifiedSaves.get("fort")));
+		
+		TextView reflexVal = (TextView) findViewById(R.id.reflex_save_value);
+		reflexVal.setText(String.valueOf(this.character.modifiedSaves.get("reflex")));
+		
+		TextView willVal = (TextView) findViewById(R.id.will_save_value);
+		willVal.setText(String.valueOf(this.character.modifiedSaves.get("will")));
+	}
+	
 	/**
 	 * Create the options menu. Add things like Manage Gear, Spell Book, Effects
 	 * etc.
@@ -327,6 +339,7 @@ public class ViewCharacter extends Activity
     	this.character.setClasses(clss);
     	this.character.calculateHP();
     	this.character.calculateAttacks();
+    	this.character.calculateSaves();
     	
     	Registry reg = Registry.getInstance();
         Object curHp = reg.get("currentHP");
@@ -337,6 +350,7 @@ public class ViewCharacter extends Activity
     	
     	populateHP();
     	populateAttacks();
+    	populateSaves();
     	
     	// Turn on the HP tracking buttons.
     	_initHPButtons();
@@ -484,16 +498,18 @@ public class ViewCharacter extends Activity
     private OnClickListener handleAddHPClicked = new OnClickListener() {
     	public void onClick(View v)
     	{
-    		addOrRemoveStr = "add";
-    		showDialog(DIALOG_CHANGE_HP);
+    		long newVal = character.currentHp + 1;
+    		character.setCurrentHP(newVal);
+    		populateHP();
     	}
     };
     
     private OnClickListener handleRemoveHPClicked = new OnClickListener() {
     	public void onClick(View v)
     	{
-    		addOrRemoveStr = "remove";
-    		showDialog(DIALOG_CHANGE_HP);
+    		long newVal = character.currentHp - 1;
+    		character.setCurrentHP(newVal);
+    		populateHP();
     	}
     };
 }

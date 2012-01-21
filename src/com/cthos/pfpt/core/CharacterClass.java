@@ -50,4 +50,28 @@ public class CharacterClass
 		
 		return 0;
 	}
+	
+	/**
+	 * Gives the save total for a given character class.
+	 * If the class has a bad save, the formula is levels / 3.
+	 * Otherwise a "good" save is 2 + (levels / 2). Round
+	 * down as per usual.
+	 * 
+	 * @param saveType
+	 * 
+	 * @return long
+	 */
+	public long getSave(String saveType)
+	{
+		long save = 0;
+		
+		if (this.badSaves.contains(saveType)) {
+			save = (long) Math.floor(this.numLevels / 3);
+		} else {
+			long base = (long) Math.floor(this.numLevels / 2);
+			save = 2 + base;
+		}
+		
+		return save;
+	}
 }

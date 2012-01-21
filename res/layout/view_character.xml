@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+    android:layout_width="fill_parent"
     android:layout_height="match_parent"
     android:gravity="center_horizontal"
     android:orientation="vertical" >
@@ -18,47 +18,60 @@
         android:layout_height="wrap_content" >
 
         <LinearLayout
-            android:id="@+id/linearLayout2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.06"
-            android:gravity="center"
-            android:orientation="vertical" >
-
-            <TextView
-                android:id="@+id/hp_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingLeft="5px"
-                android:text="HP" />
-
-            <TextView
-                android:id="@+id/hp_value"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="0"
-                android:textAppearance="?android:attr/textAppearanceLarge" />
-
-            <Button
-                android:id="@+id/damage_button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Damage" />
-
-            <Button
-                android:id="@+id/healing_button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Healing" />
-
-        </LinearLayout>
-
-        <LinearLayout
             android:id="@+id/linearLayout3"
             android:layout_width="205dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.01"
             android:orientation="horizontal" >
+
+            <LinearLayout
+                android:id="@+id/linearLayout11"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="0.01"
+                android:gravity="center_horizontal"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:id="@+id/fort_save_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Fort" />
+
+                <TextView
+                    android:id="@+id/fort_save_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                <TextView
+                    android:id="@+id/reflex_save_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Reflex" />
+
+                <TextView
+                    android:id="@+id/reflex_save_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                <TextView
+                    android:id="@+id/will_save_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Will" />
+
+                <TextView
+                    android:id="@+id/will_save_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/linearLayout4"
@@ -125,6 +138,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="0.02"
+                android:gravity="right"
                 android:orientation="vertical" >
 
                 <TextView
@@ -223,6 +237,52 @@
 
         </LinearLayout>
 
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/hp_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="5px"
+        android:text="HP" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.02"
+        android:gravity="center"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/damage_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="-" android:layout_weight="1"/>
+
+        <LinearLayout
+            android:id="@+id/linearLayout12"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="0.01"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/hp_value"
+                android:layout_height="wrap_content"
+                android:text="0"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:layout_width="wrap_content"
+                android:layout_gravity="center" />
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/healing_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="+" android:layout_weight="1"/>
     </LinearLayout>
 
     <TextView

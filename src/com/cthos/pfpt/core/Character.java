@@ -32,6 +32,10 @@ public class Character
 	
 	public HashMap<String, Number> modifiedAttributes;
 	
+	public HashMap<String, Number> saves = new HashMap();
+	
+	public HashMap<String, Number> modifiedSaves;
+	
 	public long ac;
 	
 	public long hp;
@@ -200,6 +204,42 @@ public class Character
 		//TODO: Remember to add in Size and Misc bonuses.
 		this.cmb = bab + strBonus;
 		this.cmd = 10 + bab + strBonus + dexBonus;
+	}
+	
+	/**
+	 * Calculates the saves, and applies any gear bonuses.
+	 * 
+	 * @return
+	 */
+	public HashMap<String, Number> calculateSaves()
+	{
+		int will = 0;
+		int reflex = 0;
+		int fort = 0;
+		
+		int classLen = this.characterClasses.size();
+		CharacterClass cl;
+		double hpbeep;
+		
+		for (int i = 0; i < classLen; i++) {
+			cl = this.characterClasses.get(i);
+			
+			will += cl.getSave("will");
+			reflex += cl.getSave("reflex");
+			fort += cl.getSave("fort");
+		}
+		
+		will += calculateBonus(this.attributes.get("wisdom"));
+		reflex += calculateBonus(this.attributes.get("dexterity"));
+		fort += calculateBonus(this.attributes.get("constitution"));
+		
+		saves.put("will", will);
+		saves.put("reflex", reflex);
+		saves.put("fort", fort);
+		
+		modifiedSaves = saves;
+		
+		return saves;
 	}
 	
 	public void gearUpdateAttributes()
