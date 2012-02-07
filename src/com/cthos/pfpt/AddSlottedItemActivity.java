@@ -162,6 +162,13 @@ public class AddSlottedItemActivity extends Activity
         });
 	}
 	
+	/**
+	 * Handled when the dialog is set to be summoned, and tells
+	 * the application to do setup required for the
+	 * Add Bonus dialog.
+	 * 
+	 * @param int did
+	 */
 	protected Dialog onCreateDialog(int did)
 	{
 		AlertDialog dialog;

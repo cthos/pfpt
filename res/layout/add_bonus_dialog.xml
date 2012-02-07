@@ -19,7 +19,7 @@
                 android:id="@+id/add_bonus_bonus_type_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Bonus Type"
+                android:text="Mofifier Type"
                 android:layout_weight="0.05" android:gravity="center_vertical"/>
 
             <TextView

@@ -271,6 +271,11 @@ public class ViewCharacter extends Activity
         return true;
     }
     
+    /**
+     * Called whenever a context item is selected from the menu.
+     * 
+     * @param MenuItem item
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
@@ -282,6 +287,9 @@ public class ViewCharacter extends Activity
     			break;
     		case MENU_ITEM_MANAGE_CHARACTER:
     			intent.setClass(this, ManageCharacterActivity.class);
+    			break;
+    		case MENU_ITEM_ABILITIES:
+    			intent.setClass(this, AbilitiesActivity.class);
     			break;
     		default:
     			return false;
@@ -316,6 +324,15 @@ public class ViewCharacter extends Activity
     	populateHP();
     }
     
+    /**
+     * Called when the background thread loading the gear is
+     * completed. This handles updating the view interface.
+     * 
+     * @param gear An ArrayList returned from the background
+     *             thread
+     * 
+     * @return
+     */
     protected void gearLoaded(ArrayList<SlottedItem> gear)
     {
     	Log.d("gear", "Gear Loaded");
