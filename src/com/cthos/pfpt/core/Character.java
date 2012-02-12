@@ -9,6 +9,8 @@ import java.util.HashMap;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.util.Log;
@@ -24,6 +26,8 @@ import com.cthos.util.Registry;
  */
 public class Character 
 {
+	public static final String SETTINGS_KEY = "CharacterSettings_";
+	
 	public static final Uri CONTENT_URI = Uri.parse("content://com.cthos.pfpt.core/character");
 	
 	public String name;
@@ -130,16 +134,20 @@ public class Character
 		
 		for (int i = 0; i < classLen; i++) {
 			cl = this.characterClasses.get(i);
+			int numLevels = cl.numLevels;
 			
 			if (i == 0) {
 				baseHP += cl.hitDie;
-				continue;
+				numLevels--;
+				if (numLevels == 0) {
+					continue;
+				}
 			}
 			
 			Log.d("HP", String.valueOf(baseHP));
 			
 			// Uses Pathfinder Society HP rules for the moment.
-			hpbeep = (Math.ceil(cl.hitDie/2) + 1) * cl.numLevels + (conBonus * cl.numLevels);
+			hpbeep = (Math.ceil(cl.hitDie/2) + 1) * numLevels + (conBonus * numLevels);
 			baseHP += hpbeep;
 		}
 		
@@ -159,7 +167,7 @@ public class Character
 	 * 
 	 * @return Boolean
 	 */
-	public Boolean setCurrentHP(long hpVal)
+	public Boolean setCurrentHP(long hpVal, Context context)
 	{
 		if (hpVal > this.hp) {
 			this.currentHp = this.hp;
@@ -168,10 +176,33 @@ public class Character
 		
 		this.currentHp = hpVal;
 		
+		SharedPreferences settings = context.getSharedPreferences(
+			Character.SETTINGS_KEY + this.name,
+			0
+		);
+		settings.edit().putLong("CurrentHP", this.currentHp).commit();
+		
 		Registry reg = Registry.getInstance();
     	reg.set("currentHP", this.currentHp);
 		
 		return true;
+	}
+	
+	/**
+	 * Tries to load saved HP from the settings object,
+	 * defaults to maximum hp. Should only be called after
+	 * character classes have been added.
+	 * 
+	 * @param context
+	 */
+	public void loadSavedHP(Context context)
+	{
+		SharedPreferences settings = context.getSharedPreferences(
+			Character.SETTINGS_KEY + this.name,
+			0
+		);
+		
+		this.currentHp = settings.getLong("CurrentHP", this.hp);
 	}
 	
 	public void calculateAttacks()

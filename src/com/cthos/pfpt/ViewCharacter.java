@@ -10,13 +10,17 @@ import android.content.ContentProvider;
 import android.content.ContentProviderClient;
 import android.content.ContentResolver;
 import android.content.ContentUris;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.PowerManager;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -53,6 +57,10 @@ public class ViewCharacter extends Activity
 	protected String addOrRemoveStr;
 	protected int addRemoveHPAmount = 0;
 	
+	protected boolean _keepScreenAwake = false;
+	
+	protected PowerManager.WakeLock wl;
+	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,7 +72,31 @@ public class ViewCharacter extends Activity
         Log.d("", String.valueOf(characterId));
         
         loadCharacterData(characterId);
+        
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        _keepScreenAwake = sharedPrefs.getBoolean("keep_screen_awake", true);
+        
+        PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+		this.wl = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "View Character Lock");
     }
+	
+	@Override
+	public void onResume()
+	{
+		super.onResume();
+		if (_keepScreenAwake) {
+			this.wl.acquire();
+		}
+	}
+	
+	@Override
+	public void onPause()
+	{
+		super.onPause();
+		if (_keepScreenAwake) {
+			this.wl.release();
+		}
+	}
 	
 	/**
 	 * Summons up the current character data. Tries to do it
@@ -308,19 +340,19 @@ public class ViewCharacter extends Activity
      * 
      * @return void
      */
-    protected void handleHPChanged()
+    protected void handleHPChanged(boolean positive, int amount)
     {
     	long newHP = 0;
     	
-    	if (addOrRemoveStr.equals("add")) {
-    		newHP = this.character.currentHp + addRemoveHPAmount;
+    	if (positive) {
+    		newHP = this.character.currentHp + amount;
     	} else {
-    		newHP = this.character.currentHp - addRemoveHPAmount;
+    		newHP = this.character.currentHp - amount;
     	}
     	
     	Log.d("Hp changes", String.valueOf(newHP));
     	
-    	this.character.setCurrentHP(newHP);
+    	this.character.setCurrentHP(newHP, this);
     	populateHP();
     }
     
@@ -358,12 +390,7 @@ public class ViewCharacter extends Activity
     	this.character.calculateAttacks();
     	this.character.calculateSaves();
     	
-    	Registry reg = Registry.getInstance();
-        Object curHp = reg.get("currentHP");
-        if (curHp != null) {
-        	Log.d("HP Change", "Found hp value in memory. Setting.");
-        	this.character.currentHp = Integer.valueOf(curHp.toString());
-        }
+    	this.character.loadSavedHP(this);
     	
     	populateHP();
     	populateAttacks();
@@ -413,7 +440,11 @@ public class ViewCharacter extends Activity
 								public void onClick(DialogInterface dialog, int which) {
 									addRemoveHPAmount = Integer.parseInt(howMuch.getText().toString());
 									howMuch.setText("");
-									handleHPChanged();
+									boolean addHP = false;
+									if (addOrRemoveStr.toLowerCase().equals("add")) {
+										addHP = true;
+									}
+									handleHPChanged(addHP, addRemoveHPAmount);
 									
 									dialog.cancel();
 								}
@@ -515,18 +546,14 @@ public class ViewCharacter extends Activity
     private OnClickListener handleAddHPClicked = new OnClickListener() {
     	public void onClick(View v)
     	{
-    		long newVal = character.currentHp + 1;
-    		character.setCurrentHP(newVal);
-    		populateHP();
+    		handleHPChanged(true, 1);
     	}
     };
     
     private OnClickListener handleRemoveHPClicked = new OnClickListener() {
     	public void onClick(View v)
     	{
-    		long newVal = character.currentHp - 1;
-    		character.setCurrentHP(newVal);
-    		populateHP();
+    		handleHPChanged(false, 1);
     	}
     };
 }

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+	<PreferenceCategory 
+        android:title="Application Settings"
+        android:key="application_settings">
+        
+        <CheckBoxPreference 
+            android:key="keep_screen_awake"
+            android:summary="Keep the screen awake on view characters screen?"
+            android:title="Keep awake" 
+            android:defaultValue="true"
+        />
+    </PreferenceCategory>
+</PreferenceScreen>

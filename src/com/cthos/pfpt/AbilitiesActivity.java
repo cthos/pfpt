@@ -6,16 +6,25 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ListActivity;
+import android.content.ContentProvider;
+import android.content.ContentProviderClient;
 import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.SimpleCursorAdapter;
@@ -33,6 +42,8 @@ public class AbilitiesActivity extends ListActivity
 	protected ContentValues _cv;
 	
 	protected AbilitiesAdapter _curAdapter;
+	
+	protected Cursor _abilitiesCursor;
 	
 	protected static final int ADD_ABILITY_DIALOG = 1;
 	
@@ -56,13 +67,45 @@ public class AbilitiesActivity extends ListActivity
         _loadAbilities();
     }
 	
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo)
+	{
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.abilities_context, menu);
+	}
+	
+	@Override
+	public boolean onContextItemSelected(MenuItem item)
+	{
+		AdapterView.AdapterContextMenuInfo info;
+		info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+		
+		long id = getListAdapter().getItemId(info.position);
+        Log.d("", "id = " + id);
+		
+        // TODO: Move this to async task if it winds up being a problem.
+        Uri editUri = ContentUris.withAppendedId(Uri.parse("content://com.cthos.pfpt.core.abilityprovider/ability"), id);
+        
+        ContentProviderClient client = getContentResolver().acquireContentProviderClient(editUri);
+        ContentProvider provider = client.getLocalContentProvider();
+        
+		switch (item.getItemId()) {
+			case R.id.delete:
+				provider.delete(editUri, null, null);
+				onAbilityListChanged();
+				break;
+		}
+		
+		return true;
+	}
+	
 	/**
 	 * Loads abilities into a SimpleCursor adapter to show them in the activity
 	 * 
 	 */
 	protected void _loadAbilities()
 	{
-		Cursor cursor = managedQuery(
+		_abilitiesCursor = managedQuery(
 		Uri.parse("content://com.cthos.pfpt.core.abilityprovider/ability"),
 			PROJECTION,
 		 	"character_id = ?",
@@ -70,9 +113,9 @@ public class AbilitiesActivity extends ListActivity
 		    "_id ASC"
 	    );
 		
-		startManagingCursor(cursor);
+		startManagingCursor(_abilitiesCursor);
 		
-		_curAdapter = new AbilitiesAdapter(this, R.layout.ability_list_item, cursor,
+		_curAdapter = new AbilitiesAdapter(this, R.layout.ability_list_item, _abilitiesCursor,
                 new String[] { "name", "current_uses" }, new int[] {R.id.ability_item_ability_name, R.id.ability_item_abiltity_count});
         setListAdapter(_curAdapter);
         registerForContextMenu(getListView());
@@ -109,9 +152,26 @@ public class AbilitiesActivity extends ListActivity
 				_cr.insert(Uri.parse("content://com.cthos.pfpt.core.abilityprovider/ability"), _cv);
 				return null;
 			}
+			
+			@Override
+			protected void onPostExecute(Void v)
+			{
+				onAbilityListChanged();
+			}
 		}.execute();
-		
+	}
+	
+	/**
+	 * Called after the new abilities have been added to the
+	 * database
+	 * 
+	 * @return void
+	 */
+	protected void onAbilityListChanged()
+	{
+		_abilitiesCursor.requery();
 		_curAdapter.notifyDataSetChanged();
+		findViewById(android.R.id.list).invalidate();
 	}
 	
 	/**

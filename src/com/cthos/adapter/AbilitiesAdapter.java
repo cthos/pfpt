@@ -9,6 +9,8 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
 import android.util.Log;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -72,6 +74,8 @@ public class AbilitiesAdapter extends SimpleCursorAdapter
 		Button plusButton = (Button) row.findViewById(R.id.ability_list_plus);
 		plusButton.setOnClickListener(handleAddCount);
 		plusButton.setTag(String.valueOf(position));
+		
+		row.setOnCreateContextMenuListener(null);
 		
 		return row;
 	}
