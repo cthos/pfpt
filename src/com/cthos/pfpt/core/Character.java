@@ -56,14 +56,17 @@ public class Character
 	
 	public long meleeToHit;
 	
+	protected Context _context;
+	
 	public String languages;
 	
 	protected ArrayList<SlottedItem> gear;
 	
 	protected ArrayList<CharacterClass> characterClasses;
 	
-	public Character(Cursor c)
+	public Character(Cursor c, Context context)
 	{
+		this._context = context;
 		_loadFromCursor(c);
 	}
 	
@@ -153,6 +156,8 @@ public class Character
 		
 		this.hp = this.currentHp = baseHP;
 		
+		this.hp += getAdditionalHP();
+		
 		return baseHP;
 	}
 	
@@ -167,7 +172,7 @@ public class Character
 	 * 
 	 * @return Boolean
 	 */
-	public Boolean setCurrentHP(long hpVal, Context context)
+	public Boolean setCurrentHP(long hpVal)
 	{
 		if (hpVal > this.hp) {
 			this.currentHp = this.hp;
@@ -176,7 +181,7 @@ public class Character
 		
 		this.currentHp = hpVal;
 		
-		SharedPreferences settings = context.getSharedPreferences(
+		SharedPreferences settings = _context.getSharedPreferences(
 			Character.SETTINGS_KEY + this.name,
 			0
 		);
@@ -195,14 +200,42 @@ public class Character
 	 * 
 	 * @param context
 	 */
-	public void loadSavedHP(Context context)
+	public void loadSavedHP()
 	{
-		SharedPreferences settings = context.getSharedPreferences(
+		SharedPreferences settings = _context.getSharedPreferences(
 			Character.SETTINGS_KEY + this.name,
 			0
 		);
 		
 		this.currentHp = settings.getLong("CurrentHP", this.hp);
+	}
+	
+	/**
+	 * Set from the AdjustStats activity, allows you to save
+	 * additional HP.
+	 * 
+	 * @param context
+	 * @param hpVal
+	 */
+	public void setAdditionalHP(long hpVal)
+	{
+		SharedPreferences settings = _context.getSharedPreferences(
+			Character.SETTINGS_KEY + this.name,
+			0
+		);
+		
+		settings.edit().putLong("AdditionalHP", hpVal).commit();
+	}
+	
+	public long getAdditionalHP()
+	{
+		SharedPreferences settings = _context.getSharedPreferences(
+			Character.SETTINGS_KEY + this.name,
+			0
+		);
+		
+		long additionalHp = settings.getLong("AdditionalHP", 0);
+		return additionalHp;
 	}
 	
 	public void calculateAttacks()

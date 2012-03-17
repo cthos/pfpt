@@ -99,7 +99,7 @@ public class CreateCharacter extends Activity
         
         Spinner strSpin = (Spinner) findViewById(R.id.strengthSpinner);
         strSpin.setAdapter(ablAdapter);
-        strSpin.setSelection(10);
+        strSpin.setSelection(9);
         strSpin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                CreateCharacter.strValue = parent.getItemAtPosition(pos).toString();
@@ -110,7 +110,7 @@ public class CreateCharacter extends Activity
         
         Spinner dexSpinner = (Spinner) findViewById(R.id.dexteritySpinner);
         dexSpinner.setAdapter(ablAdapter);
-        dexSpinner.setSelection(10);
+        dexSpinner.setSelection(9);
         dexSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                CreateCharacter.dexValue = parent.getItemAtPosition(pos).toString();
@@ -121,7 +121,7 @@ public class CreateCharacter extends Activity
         
         Spinner conSpinner = (Spinner) findViewById(R.id.constitutionSpinner);
         conSpinner.setAdapter(ablAdapter);
-        conSpinner.setSelection(10);
+        conSpinner.setSelection(9);
         conSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                CreateCharacter.conValue = parent.getItemAtPosition(pos).toString();
@@ -132,7 +132,7 @@ public class CreateCharacter extends Activity
         
         Spinner intSpinner = (Spinner) findViewById(R.id.intellegenceSpinner);
         intSpinner.setAdapter(ablAdapter);
-        intSpinner.setSelection(10);
+        intSpinner.setSelection(9);
         intSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                CreateCharacter.intValue = parent.getItemAtPosition(pos).toString();
@@ -143,7 +143,7 @@ public class CreateCharacter extends Activity
         
         Spinner wisSpinner = (Spinner) findViewById(R.id.wisdomSpinner);
         wisSpinner.setAdapter(ablAdapter);
-        wisSpinner.setSelection(10);
+        wisSpinner.setSelection(9);
         wisSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                CreateCharacter.wisValue = parent.getItemAtPosition(pos).toString();
@@ -154,7 +154,7 @@ public class CreateCharacter extends Activity
         
         Spinner chaSpinner = (Spinner) findViewById(R.id.charismaSpinner);
         chaSpinner.setAdapter(ablAdapter);
-        chaSpinner.setSelection(10);
+        chaSpinner.setSelection(9);
         chaSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                CreateCharacter.chaValue = parent.getItemAtPosition(pos).toString();

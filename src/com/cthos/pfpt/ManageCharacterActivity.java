@@ -45,7 +45,11 @@ public class ManageCharacterActivity extends Activity
     private OnClickListener handleAdjustStats = new OnClickListener() {
     	public void onClick(View v)
     	{
+    		Intent i = new Intent();
+    		i.setClass(v.getContext(), AdjustStatsActivity.class);
+    		i.putExtra("characterId", characterId);
     		
+    		startActivity(i);
     	}
     };
 }

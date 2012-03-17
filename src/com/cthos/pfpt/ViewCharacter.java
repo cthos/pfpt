@@ -119,7 +119,7 @@ public class ViewCharacter extends Activity
         
         Cursor c = provider.query(chUri, null, null, null, null);
         
-        this.character = new com.cthos.pfpt.core.Character(c);
+        this.character = new com.cthos.pfpt.core.Character(c, this);
         
         Cursor slottedC = managedQuery(
     		Uri.parse("content://com.cthos.pfpt.core.slotteditemprovider/slotted_item"),
@@ -352,7 +352,7 @@ public class ViewCharacter extends Activity
     	
     	Log.d("Hp changes", String.valueOf(newHP));
     	
-    	this.character.setCurrentHP(newHP, this);
+    	this.character.setCurrentHP(newHP);
     	populateHP();
     }
     
@@ -390,7 +390,7 @@ public class ViewCharacter extends Activity
     	this.character.calculateAttacks();
     	this.character.calculateSaves();
     	
-    	this.character.loadSavedHP(this);
+    	this.character.loadSavedHP();
     	
     	populateHP();
     	populateAttacks();

@@ -7,14 +7,14 @@
     <LinearLayout
         android:id="@+id/linearLayout3"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight=".05" >
-
+        android:layout_height="wrap_content">
+
         <LinearLayout
             android:id="@+id/linearLayout1"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight=".05"
+            android:gravity="center_vertical"
             android:orientation="vertical" >
 
             <TextView
@@ -32,8 +32,20 @@
             android:layout_height="wrap_content"
             android:layout_weight=".05"
             android:orientation="vertical" >
-        </LinearLayout>
 
+            <EditText
+                android:id="@+id/adjust_stats_additional_hp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" >
+            </EditText>
+
+        </LinearLayout>
     </LinearLayout>
+
+    <Button
+        android:id="@+id/adjust_stats_save_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Save" />
 
 </LinearLayout>
