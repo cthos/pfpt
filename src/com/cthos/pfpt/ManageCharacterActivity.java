@@ -26,6 +26,9 @@ public class ManageCharacterActivity extends Activity
 	{
 		Button charLevels = (Button) findViewById(R.id.manage_character_levels_button);
 		charLevels.setOnClickListener(handleManageLevels);
+		
+		Button adjustStats = (Button) findViewById(R.id.adjust_stats_button);
+		adjustStats.setOnClickListener(handleAdjustStats);
 	}
 	
 	private OnClickListener handleManageLevels = new OnClickListener() {
@@ -36,6 +39,13 @@ public class ManageCharacterActivity extends Activity
     		i.putExtra("characterId", characterId);
     		
     		startActivity(i);
+    	}
+    };
+    
+    private OnClickListener handleAdjustStats = new OnClickListener() {
+    	public void onClick(View v)
+    	{
+    		
     	}
     };
 }
