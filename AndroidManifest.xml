@@ -91,5 +91,6 @@
         <provider android:authorities="com.cthos.pfpt.core.slotteditemprovider" android:name="com.cthos.db.SlottedItemProvider"></provider>
         <provider android:authorities="com.cthos.pfpt.core.characterclasslevelprovider" android:name="com.cthos.db.CharacterClassLevelProvider"></provider>
         <provider android:authorities="com.cthos.pfpt.core.abilityprovider" android:name="com.cthos.db.AbilityProvider"></provider>
+        <provider android:authorities="com.cthos.pfpt.core.gearprovider" android:name="com.cthos.db.GearProvider"></provider>
     </application>
 </manifest>

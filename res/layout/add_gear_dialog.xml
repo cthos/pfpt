@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:id="@+id/linearLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <LinearLayout
+            android:id="@+id/linearLayout2"
+            android:layout_width="108dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/add_gear_item_name_label"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Item Name"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_weight="0.05"
+                android:gravity="center_vertical" />
+
+            <TextView
+                android:id="@+id/add_gear_quantity_label"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Quantity"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_weight="0.05"
+                android:gravity="center_vertical" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linearLayout3"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical" android:layout_weight="0.05">
+
+            <EditText
+                android:id="@+id/add_gear_item_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.05" />
+
+            <EditText
+                android:id="@+id/add_gear_quantity"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.05" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

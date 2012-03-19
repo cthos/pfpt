@@ -95,12 +95,13 @@ public class SlottedItemProvider extends ContentProvider
 	public String getType(Uri uri) {
 		 switch (sUriMatcher.match(uri)) {
 	        case SLOTTED_ITEM:
-	        case SLOTTED_ITEM_ID:
 	        	return "vnd.android.cursor.dir/vnd.pfpt.slotted_item";
+	        case SLOTTED_ITEM_ID:
+	        	return "vnd.android.cursor.item/vnd.pfpt.slotted_item";
 
 	        default:
 	            throw new IllegalArgumentException("Unknown URI " + uri);
-	        }
+        }
 	}
 
 	@Override

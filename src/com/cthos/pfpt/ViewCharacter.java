@@ -228,7 +228,7 @@ public class ViewCharacter extends Activity
 			hpval.setTextColor(Color.RED);
 		} else if (this.character.currentHp == 0) {
 			hpval.setTextColor(Color.YELLOW);
-		} else if (this.character.currentHp == this.character.hp) {
+		} else if (this.character.currentHp >= this.character.hp) {
 			hpval.setTextColor(Color.GREEN);
 		} else {
 			hpval.setTextColor(Color.WHITE);

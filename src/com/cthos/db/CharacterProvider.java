@@ -25,7 +25,7 @@ public class CharacterProvider extends ContentProvider
 
     private static final String DATABASE_NAME = "character.db";
     // Store this somewhere in a registry or something.
-    static final int DATABASE_VERSION = 7;
+    static final int DATABASE_VERSION = 8;
     private static final String CHARACTER_TABLE_NAME = "characters";
     private static final String CLASS_TABLE_NAME = "character_classes";
     private static final String DERIVED_TRAITS_NAME = "character_dt";

@@ -8,9 +8,12 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.UriMatcher;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
+import android.text.TextUtils;
 import android.util.Log;
 
 public class GearProvider extends ContentProvider
@@ -47,7 +50,7 @@ public class GearProvider extends ContentProvider
         case GEAR_ID:
         	long id = ContentUris.parseId(uri);
         	String[] idAr = {String.valueOf(id)};
-        	count = db.delete(GEAR_TABLE_NAME, "_id = ?", idAr);
+        	count = db.delete(GEAR_TABLE_NAME, "_ID = ?", idAr);
         	break;
         default:
             throw new IllegalArgumentException("Unknown URI " + uri);
@@ -58,28 +61,97 @@ public class GearProvider extends ContentProvider
 	}
 
 	@Override
-	public String getType(Uri arg0) {
-		// TODO Auto-generated method stub
-		return null;
+	public String getType(Uri uri) {
+		switch (sUriMatcher.match(uri)) {
+        case GEAR:
+        	return "vnd.android.cursor.dir/vnd.pfpt.gear";
+        case GEAR_ID:
+        	return "vnd.android.cursor.item/vnd.pfpt.gear";
+        default:
+            throw new IllegalArgumentException("Unknown URI " + uri);
+		}
 	}
 
 	@Override
-	public Uri insert(Uri arg0, ContentValues arg1) {
-		// TODO Auto-generated method stub
-		return null;
+	public Uri insert(Uri uri, ContentValues initialValues) {
+		if (sUriMatcher.match(uri) != GEAR) {
+            throw new IllegalArgumentException("Unknown URI " + uri);
+        }
+
+        ContentValues values;
+        
+        if (initialValues != null) {
+            values = new ContentValues(initialValues);
+        } else {
+            values = new ContentValues();
+        }
+
+        SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+        long rowId = db.insert(GEAR_TABLE_NAME, "character_id", values);
+        if (rowId > 0) {
+            Uri charUri = ContentUris.withAppendedId(
+        		Uri.parse("content:com.cthos.pfpt.core.gearprovider/gear"),
+        		rowId
+            );
+            getContext().getContentResolver().notifyChange(charUri, null);
+            return charUri;
+        }
+
+        throw new SQLException("Failed to insert row into " + uri);
 	}
 
 	@Override
-	public Cursor query(Uri arg0, String[] arg1, String arg2, String[] arg3,
-			String arg4) {
-		// TODO Auto-generated method stub
-		return null;
+	public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs,
+			String sortOrder) {
+		SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
+        qb.setTables(GEAR_TABLE_NAME);
+
+        switch (sUriMatcher.match(uri)) {
+        case GEAR:
+            qb.setProjectionMap(gearProjectionMap);
+            break;
+        case GEAR_ID:
+        	selection = "_ID = ?";
+        	long id = ContentUris.parseId(uri);
+        	selectionArgs = new String[] {String.valueOf(id)};
+        	break;
+        default:
+            throw new IllegalArgumentException("Unknown URI " + uri);
+        }
+
+        // If no sort order is specified use the default
+        String orderBy;
+        if (TextUtils.isEmpty(sortOrder)) {
+            orderBy = "_id ASC";
+        } else {
+            orderBy = sortOrder;
+        }
+
+        // Get the database and run the query
+        SQLiteDatabase db = mOpenHelper.getReadableDatabase();
+        Cursor c = qb.query(db, projection, selection, selectionArgs, null, null, orderBy);
+
+        // Tell the cursor what uri to watch, so it knows when its source data changes
+        c.setNotificationUri(getContext().getContentResolver(), uri);
+        return c;
 	}
 
 	@Override
-	public int update(Uri arg0, ContentValues arg1, String arg2, String[] arg3) {
-		// TODO Auto-generated method stub
-		return 0;
+	public int update(Uri uri, ContentValues values, String where, String[] whereArgs)
+	{
+		SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+        int count;
+        switch (sUriMatcher.match(uri)) {
+        case GEAR:
+            count = db.update(GEAR_TABLE_NAME, values, where, whereArgs);
+            break;
+
+        default:
+            throw new IllegalArgumentException("Unknown URI " + uri);
+        }
+
+        getContext().getContentResolver().notifyChange(uri, null);
+        return count;
 	}
 	
 	/**
@@ -113,7 +185,7 @@ public class GearProvider extends ContentProvider
     static {
         sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
         sUriMatcher.addURI("com.cthos.pfpt.core.gearprovider", "gear", GEAR);
-        sUriMatcher.addURI("com.cthos.pfpt.core.slotteditemprovider", "gear/#", GEAR_ID);
+        sUriMatcher.addURI("com.cthos.pfpt.core.gearprovider", "gear/#", GEAR_ID);
         
         gearProjectionMap = new HashMap<String, String>();
         gearProjectionMap.put("_id", "_id");
