@@ -212,7 +212,7 @@ public class GearActivity extends ListActivity
 		final EditText itemNameText = (EditText) custom_view.findViewById(R.id.add_gear_item_name);
 		final EditText quantityText = (EditText) custom_view.findViewById(R.id.add_gear_quantity);
 		
-		AlertDialog dialog = new AlertDialog.Builder(this).setTitle("Add Bonus")
+		AlertDialog dialog = new AlertDialog.Builder(this).setTitle("Add Misc Gear")
             .setView(custom_view)
             .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 				

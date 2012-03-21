@@ -323,6 +323,9 @@ public class ViewCharacter extends Activity
     		case MENU_ITEM_ABILITIES:
     			intent.setClass(this, AbilitiesActivity.class);
     			break;
+    		case MENU_ITEM_EFFECTS:
+    			intent.setClass(this, ActiveEffectsActivity.class);
+    			break;
     		default:
     			return false;
     	}
