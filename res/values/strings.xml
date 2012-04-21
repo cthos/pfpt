@@ -87,12 +87,14 @@
     	<item>Profane</item>
     	<item>Morale</item>
     	<item>Luck</item>
+    	<item>Resistance</item>
     	<item>Other</item>
     </string-array>
     <string-array name="apply_bonus_to_array">
     	<item>AC</item>
     	<item>Attack</item>
     	<item>Damage</item>
+    	<item>Saves</item>
     	<item>Strength</item>
     	<item>Dexterity</item>
     	<item>Constitution</item>

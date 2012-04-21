@@ -372,8 +372,8 @@ public class ViewCharacter extends Activity
     {
     	Log.d("gear", "Gear Loaded");
     	this.character.setGear(gear);
-    	this.character.calculateAC();
     	this.character.gearUpdateAttributes();
+    	this.character.calculateAC();
     	populateAC();
     	populateAttributes();
     }

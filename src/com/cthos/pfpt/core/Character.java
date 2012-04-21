@@ -107,7 +107,7 @@ public class Character
 	{
 		long baseAC = 10;
 		
-		long dexBonus = this.calculateBonus(this.attributes.get("dexterity"));
+		long dexBonus = this.calculateBonus(this.modifiedAttributes.get("dexterity"));
 		
 		HashMap<String, Number> gearMap = getGearMap("AC"); 
 		
@@ -293,9 +293,11 @@ public class Character
 			fort += cl.getSave("fort");
 		}
 		
-		will += calculateBonus(this.attributes.get("wisdom"));
-		reflex += calculateBonus(this.attributes.get("dexterity"));
-		fort += calculateBonus(this.attributes.get("constitution"));
+		int saveBonus = getGearAttributeValue("saves");
+		
+		will += calculateBonus(this.modifiedAttributes.get("wisdom")) + saveBonus;
+		reflex += calculateBonus(this.modifiedAttributes.get("dexterity")) + saveBonus;
+		fort += calculateBonus(this.modifiedAttributes.get("constitution")) + saveBonus;
 		
 		saves.put("will", will);
 		saves.put("reflex", reflex);
