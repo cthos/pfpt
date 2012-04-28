@@ -59,6 +59,9 @@ public class ViewCharacter extends Activity
 	
 	protected boolean _keepScreenAwake = false;
 	
+	protected boolean classesLoaded = false;
+	protected boolean equipmentLoaded = false;
+	
 	protected PowerManager.WakeLock wl;
 	
 	@Override
@@ -376,6 +379,12 @@ public class ViewCharacter extends Activity
     	this.character.calculateAC();
     	populateAC();
     	populateAttributes();
+    	
+    	this.equipmentLoaded = true;
+    	
+    	if (this.isEverythingLoaded()) {
+    		this.allLoaded();
+    	}
     }
     
     /**
@@ -391,16 +400,33 @@ public class ViewCharacter extends Activity
     	this.character.setClasses(clss);
     	this.character.calculateHP();
     	this.character.calculateAttacks();
-    	this.character.calculateSaves();
     	
     	this.character.loadSavedHP();
     	
     	populateHP();
     	populateAttacks();
-    	populateSaves();
+    	
     	
     	// Turn on the HP tracking buttons.
     	_initHPButtons();
+
+    	this.classesLoaded = true;
+
+    	if (this.isEverythingLoaded()) {
+    		this.allLoaded();
+    	}
+    }
+    
+    protected void allLoaded()
+    {
+    	this.character.calculateSaves();
+    	
+    	populateSaves();
+    }
+    
+    protected boolean isEverythingLoaded()
+    {
+    	return this.classesLoaded && this.equipmentLoaded;
     }
     
     /**
