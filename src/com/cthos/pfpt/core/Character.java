@@ -5,6 +5,8 @@ package com.cthos.pfpt.core;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -64,6 +66,8 @@ public class Character
 	
 	protected ArrayList<CharacterClass> characterClasses;
 	
+	protected ArrayList<ActiveEffect> activeEffects;
+	
 	public Character(Cursor c, Context context)
 	{
 		this._context = context;
@@ -95,6 +99,11 @@ public class Character
 		this.gear = gear;
 		
 		Log.d("Gear", "Gear count " + String.valueOf(gear.size()));
+	}
+	
+	public void setActiveEffects(ArrayList<ActiveEffect> effects)
+	{
+		this.activeEffects = effects;
 	}
 	
 	public void setClasses(ArrayList<CharacterClass> characterClasses)
@@ -293,7 +302,7 @@ public class Character
 			fort += cl.getSave("fort");
 		}
 		
-		int saveBonus = getGearAttributeValue("saves");
+		int saveBonus = getAttributeBonus("saves");
 		
 		will += calculateBonus(this.modifiedAttributes.get("wisdom")) + saveBonus;
 		reflex += calculateBonus(this.modifiedAttributes.get("dexterity")) + saveBonus;
@@ -314,22 +323,60 @@ public class Character
 			int attMod = 0;
 			int newVal = attributes.get(key).intValue();
 			
-			attMod = getGearAttributeValue(key);
+			attMod = getAttributeBonus(key);
 			this.modifiedAttributes.put(key, newVal + attMod);
 		}
 	}
 	
-	public int getGearAttributeValue(String toWhat)
+	/**
+	 * Figures out what the bonuse is across gear and active effects.
+	 * 
+	 * @param toWhat
+	 * 
+	 * @return
+	 */
+	public int getAttributeBonus(String toWhat)
 	{
-		int attMod = 0;
+		int mod = 0;
 		
 		HashMap<String, Number> gearMap = getGearMap(toWhat);
+		HashMap<String, Number> effectMap = getEffectMap(toWhat);
+		
+		Set<String> allKeys = new HashSet<String>();
 		
 		for (String key : gearMap.keySet()) {
-			attMod += gearMap.get(key).longValue();
+			if (!allKeys.contains(key)) {
+				allKeys.add(key);
+			}
 		}
 		
-		return attMod;
+		for (String key : effectMap.keySet()) {
+			if (!allKeys.contains(key)) {
+				allKeys.add(key);
+			}
+		}
+		
+		for (String key : allKeys) {
+			long emod = 0;
+			long gmod = 0;
+			
+			if (gearMap.containsKey(key)) {
+				gmod += gearMap.get(key).longValue();
+			}
+			
+			if (effectMap.containsKey(key)) {
+				emod += effectMap.get(key).longValue();
+			}
+			
+			if (Bonus.canBonusStack(key)) {
+				mod += gmod + emod;
+				continue;
+			}
+			
+			mod += Math.max(gmod, emod);
+		}
+		
+		return mod;
 	}
 	
 	/**
@@ -382,7 +429,7 @@ public class Character
 						
 						Log.d("TypeBonus", String.valueOf(typeBonus));
 						
-						if (type == "dodge" || type == "untyped") {
+						if (Bonus.canBonusStack(type)) {
 							amt = amt + typeBonus;
 						}
 						
@@ -400,5 +447,58 @@ public class Character
 		}
 		
 		return gearMap;
+	}
+	
+	protected HashMap<String, Number> getEffectMap(String toWhat)
+	{
+		HashMap<String, Number> effectMap = new HashMap<String, Number>(); 
+		
+		toWhat = toWhat.toLowerCase();
+		
+		if (this.activeEffects != null) {
+			int gearLen = this.activeEffects.size();
+			
+			for (int i = 0; i < gearLen; i++) {
+				ActiveEffect e = this.activeEffects.get(i);
+				ArrayList<JSONObject> bonusL = new ArrayList<JSONObject>();
+				bonusL = e.getBonuses(toWhat);
+				int lSize = bonusL.size();
+				
+				if (lSize <= 0) {
+					continue;
+				}
+				
+				for (int j = 0; j < lSize; j++) {
+					JSONObject bonus = bonusL.get(j);
+					try {
+						String type = bonus.getString("name").toLowerCase();
+						long amt = bonus.getLong("howMuch");
+						
+						long typeBonus = 0;
+						
+						if (effectMap.containsKey(type)) {
+							typeBonus = effectMap.get(type).longValue();
+						}
+						
+						Log.d("TypeBonus", String.valueOf(typeBonus));
+						
+						if (Bonus.canBonusStack(type)) {
+							amt = amt + typeBonus;
+						}
+						
+						if (typeBonus == 0 || typeBonus < amt) {
+							Log.d("typeBonus", "Setting " + type + " to " + String.valueOf(typeBonus));
+							typeBonus = amt;
+							effectMap.put(type, typeBonus);
+						}
+						
+					} catch (JSONException ex) {
+						Log.d("Fail", ex.getMessage());
+					}
+				}
+			}
+		}
+		
+		return effectMap;
 	}
 }

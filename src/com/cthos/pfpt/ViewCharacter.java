@@ -35,6 +35,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.cthos.pfpt.core.ActiveEffect;
 import com.cthos.pfpt.core.CharacterClass;
 import com.cthos.pfpt.core.chr.CharacterClassFactory;
 import com.cthos.pfpt.equipment.SlottedItem;
@@ -61,6 +62,7 @@ public class ViewCharacter extends Activity
 	
 	protected boolean classesLoaded = false;
 	protected boolean equipmentLoaded = false;
+	protected boolean effectsLoaded = false;
 	
 	protected PowerManager.WakeLock wl;
 	
@@ -124,19 +126,11 @@ public class ViewCharacter extends Activity
         
         this.character = new com.cthos.pfpt.core.Character(c, this);
         
-        Cursor slottedC = managedQuery(
-    		Uri.parse("content://com.cthos.pfpt.core.slotteditemprovider/slotted_item"),
-			null,
-		 	"character_id = ?",
-		 	new String[]{String.valueOf(characterId)},
-		    "location ASC"
-        );
-        
         new LoadGearTask().execute(new Long(characterId));
         new LoadCharacterClassTask().execute(new Long(characterId));
+        new LoadActiveEffectsTask().execute(new Long(characterId));
         
         startManagingCursor(c);
-        startManagingCursor(slottedC);
         
         buildInterface();
 	}
@@ -375,10 +369,6 @@ public class ViewCharacter extends Activity
     {
     	Log.d("gear", "Gear Loaded");
     	this.character.setGear(gear);
-    	this.character.gearUpdateAttributes();
-    	this.character.calculateAC();
-    	populateAC();
-    	populateAttributes();
     	
     	this.equipmentLoaded = true;
     	
@@ -398,20 +388,18 @@ public class ViewCharacter extends Activity
     {
     	Log.d("classes", "Character Classes Loaded");
     	this.character.setClasses(clss);
-    	this.character.calculateHP();
-    	this.character.calculateAttacks();
-    	
-    	this.character.loadSavedHP();
-    	
-    	populateHP();
-    	populateAttacks();
-    	
-    	
-    	// Turn on the HP tracking buttons.
-    	_initHPButtons();
-
     	this.classesLoaded = true;
 
+    	if (this.isEverythingLoaded()) {
+    		this.allLoaded();
+    	}
+    }
+    
+    protected void effectsLoaded(ArrayList<ActiveEffect> ef)
+    {
+    	this.character.setActiveEffects(ef);
+    	this.effectsLoaded = true;
+    	
     	if (this.isEverythingLoaded()) {
     		this.allLoaded();
     	}
@@ -420,13 +408,27 @@ public class ViewCharacter extends Activity
     protected void allLoaded()
     {
     	this.character.calculateSaves();
-    	
     	populateSaves();
+    	
+    	this.character.gearUpdateAttributes();
+    	this.character.calculateAC();
+    	populateAC();
+    	populateAttributes();
+    	
+    	
+    	this.character.calculateHP();
+    	this.character.calculateAttacks();
+    	
+    	this.character.loadSavedHP();
+    	
+    	populateHP();
+    	populateAttacks();
+    	_initHPButtons();
     }
     
     protected boolean isEverythingLoaded()
     {
-    	return this.classesLoaded && this.equipmentLoaded;
+    	return this.classesLoaded && this.equipmentLoaded && this.effectsLoaded;
     }
     
     /**
@@ -557,6 +559,39 @@ public class ViewCharacter extends Activity
     	}
     }
     
+	private class LoadActiveEffectsTask extends AsyncTask<Number, Void, ArrayList<ActiveEffect>>
+    {
+    	@Override
+    	protected ArrayList<ActiveEffect> doInBackground(Number... characterId)
+    	{
+    		ArrayList<ActiveEffect> items = new ArrayList<ActiveEffect>();
+    		
+    		Cursor cursor = managedQuery(
+	    		Uri.parse("content://com.cthos.pfpt.core.activeeffectprovider/effect"),
+				null,
+			 	"character_id = ?",
+			 	new String[]{String.valueOf(characterId[0])},
+			    "duration DESC"
+	        );
+    		
+    		cursor.moveToFirst();
+    		
+            while (!cursor.isAfterLast()) {
+            	ActiveEffect theItem = new ActiveEffect(cursor);
+            	items.add(theItem);
+            	cursor.moveToNext();
+            }
+            
+            return items;
+    	}
+	
+    	@Override
+    	protected void onPostExecute(ArrayList<ActiveEffect> activeEffects)
+    	{
+    		effectsLoaded(activeEffects);
+    	}
+    }
+	
     @Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 	    if (keyCode == KeyEvent.KEYCODE_BACK) {
