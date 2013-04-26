@@ -79,26 +79,42 @@ public class Character
 		c.moveToFirst();
 		
 		this.name = c.getString(c.getColumnIndex("name"));
-		
-		this.attributes.put("strength", c.getInt(c.getColumnIndex("strength")));
-		this.attributes.put("dexterity", c.getInt(c.getColumnIndex("dexterity")));
-		this.attributes.put("constitution", c.getInt(c.getColumnIndex("constitution")));
-		this.attributes.put("wisdom", c.getInt(c.getColumnIndex("wisdom")));
-		this.attributes.put("intelligence", c.getInt(c.getColumnIndex("intelligence")));
-		this.attributes.put("charisma", c.getInt(c.getColumnIndex("charisma")));
-		
-		this.modifiedAttributes = this.attributes;
-		
-		// TODO: Modify attrs by magic gear, etc. 
+
+		long str = c.getLong(c.getColumnIndex("strength"));
+		long dex = c.getInt(c.getColumnIndex("dexterity"));
+		long con = c.getInt(c.getColumnIndex("constitution"));
+		long wis = c.getInt(c.getColumnIndex("wisdom"));
+		long intel = c.getInt(c.getColumnIndex("intelligence"));
+		long cha = c.getInt(c.getColumnIndex("charisma"));
+
+
+		this.attributes.put("strength", str);
+		this.attributes.put("dexterity", dex);
+		this.attributes.put("constitution", con);
+		this.attributes.put("wisdom", wis);
+		this.attributes.put("intelligence", intel);
+		this.attributes.put("charisma", cha);
+
+		str += getAttributeBonus("Strength");
+		dex += getAttributeBonus("Dexterity");
+		con += getAttributeBonus("Constitution");
+		wis += getAttributeBonus("Wisdom");
+		intel += getAttributeBonus("Intelligence");
+		cha += getAttributeBonus("Charisma");
+
+		this.modifiedAttributes.put("strength", str);
+		this.modifiedAttributes.put("dexterity", dex);
+		this.modifiedAttributes.put("constitution", con);
+		this.modifiedAttributes.put("wisdom", wis);
+		this.modifiedAttributes.put("intelligence", intel);
+		this.modifiedAttributes.put("charisma", cha);
+
 		this.calculateAC();
 	}
 	
 	public void setGear(ArrayList<SlottedItem> gear)
 	{
-		Log.d("Gear", "Setting Gear");
 		this.gear = gear;
-		
-		Log.d("Gear", "Gear count " + String.valueOf(gear.size()));
 	}
 	
 	public void setActiveEffects(ArrayList<ActiveEffect> effects)
@@ -117,15 +133,11 @@ public class Character
 		long baseAC = 10;
 		
 		long dexBonus = this.calculateBonus(this.modifiedAttributes.get("dexterity"));
-		
-		HashMap<String, Number> gearMap = getGearMap("AC"); 
-		
+
 		// TODO: Figure in Armour Max Dex Bonus + Armor bonus
 		long AC = baseAC + dexBonus;
-		
-		for (String key : gearMap.keySet()) {
-			AC += gearMap.get(key).longValue();
-		}
+
+		AC += getAttributeBonus("AC");
 		
 		this.ac = AC;
 		
@@ -155,8 +167,6 @@ public class Character
 					continue;
 				}
 			}
-			
-			Log.d("HP", String.valueOf(baseHP));
 			
 			// Uses Pathfinder Society HP rules for the moment.
 			hpbeep = (Math.ceil(cl.hitDie/2) + 1) * numLevels + (conBonus * numLevels);
@@ -206,8 +216,7 @@ public class Character
 	 * Tries to load saved HP from the settings object,
 	 * defaults to maximum hp. Should only be called after
 	 * character classes have been added.
-	 * 
-	 * @param context
+	 *
 	 */
 	public void loadSavedHP()
 	{
@@ -222,8 +231,7 @@ public class Character
 	/**
 	 * Set from the AdjustStats activity, allows you to save
 	 * additional HP.
-	 * 
-	 * @param context
+	 *
 	 * @param hpVal
 	 */
 	public void setAdditionalHP(long hpVal)
@@ -260,16 +268,12 @@ public class Character
 		}
 		
 		this.bab = bab;
-		long dexBonus = this.calculateBonus(this.attributes.get("dexterity"));
-		long strBonus = this.calculateBonus(this.attributes.get("strength"));
+		long dexBonus = this.calculateBonus(this.modifiedAttributes.get("dexterity"));
+		long strBonus = this.calculateBonus(this.modifiedAttributes.get("strength"));
 		
 		long atbonus = 0;
 		
-		HashMap<String, Number> gearMap = getGearMap("Attack"); 
-		
-		for (String key : gearMap.keySet()) {
-			atbonus += gearMap.get(key).longValue();
-		}
+		atbonus += getAttributeBonus("Attack");
 		
 		this.rangedToHit = bab + dexBonus + atbonus;
 		this.meleeToHit = bab + strBonus + atbonus;

@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ListActivity;
 import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -50,14 +51,14 @@ public class ActiveEffectsActivity extends ListActivity
         _initButtons();
         _initList();
 	}
-	
-	public void _initButtons()
+
+    protected void _initButtons()
 	{
 		Button addButton = (Button) findViewById(R.id.active_effects_add_effect);
 		addButton.setOnClickListener(handleAddClicked);
 	}
 	
-	public void _initList()
+	protected void _initList()
 	{	
 		_cursor = managedQuery(
 		Uri.parse("content://com.cthos.pfpt.core.activeeffectprovider/effect"),
@@ -106,11 +107,54 @@ public class ActiveEffectsActivity extends ListActivity
 		
 		return true;
     }
-	
+
+	/**
+	 * Gathers all of the active effects on a given character and then
+	 * decrements the duration by one. If the duration is 0 or less, remove
+	 * it.
+	 *
+	 */
 	protected void _nextRound()
 	{
 		ContentResolver cr = getContentResolver();
-		
+
+		Uri effectUri = Uri.parse("content://com.cthos.pfpt.core.activeeffectprovider/effect");
+		String[] characterIdWhere = new String[] {String.valueOf(characterId)};
+
+		Cursor result = cr.query(
+				effectUri,
+				new String[] {"_id", "duration"},
+				"character_id = ?",
+				characterIdWhere,
+				null
+		);
+
+		result.moveToFirst();
+		do {
+			int id = result.getInt(result.getColumnIndex("_id"));
+			String duration = result.getString(result.getColumnIndex("duration"));
+
+			int nDuration = Integer.parseInt(duration);
+			nDuration -= 1;
+
+			if (nDuration > 0) {
+				ContentValues cv = new ContentValues();
+				cv.put("duration", String.valueOf(nDuration));
+
+				cr.update(
+					effectUri,
+					cv,
+					"character_id = ?",
+					characterIdWhere
+				);
+			} else {
+				cr.delete(effectUri, "character_id = ?", characterIdWhere);
+			}
+		} while (result.moveToNext());
+
+		result.close();
+
+		_refresh();
 	}
 	
 	protected void _clearAllEffects()
