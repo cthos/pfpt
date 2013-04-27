@@ -16,27 +16,25 @@ import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
 
-public class SlottedItemProvider extends ContentProvider
-{
-	public static final String AUTHORITY = "com.cthos.pfpt.core";
-	
-	private static final String TAG = "SlottedItemProvider";
+public class SlottedItemProvider extends ContentProvider {
+    public static final String AUTHORITY = "com.cthos.pfpt.core";
+
+    private static final String TAG = "SlottedItemProvider";
 
     private static final String DATABASE_NAME = "slotted_items.db";
     private static final String SLOTTED_ITEM_TABLE_NAME = "slotted_items";
-    
+
     private static final int SLOTTED_ITEM = 1;
     private static final int SLOTTED_ITEM_ID = 2;
-    
+
     private static HashMap<String, String> slottedItemProjectionMap;
-    
+
     private static final UriMatcher sUriMatcher;
 
     /**
      * This class helps open, create, and upgrade the database file.
      */
-    private static class DatabaseHelper extends SQLiteOpenHelper
-    {
+    private static class DatabaseHelper extends SQLiteOpenHelper {
         DatabaseHelper(Context context) {
             super(context, DATABASE_NAME, null, CharacterProvider.DATABASE_VERSION);
         }
@@ -61,58 +59,58 @@ public class SlottedItemProvider extends ContentProvider
             onCreate(db);
         }
     }
-    
+
     private DatabaseHelper mOpenHelper;
-    
+
     @Override
-	public boolean onCreate() {
-    	mOpenHelper = new DatabaseHelper(getContext());
+    public boolean onCreate() {
+        mOpenHelper = new DatabaseHelper(getContext());
         return true;
-	}
-    
-	@Override
-	public int delete(Uri uri, String where, String[] whereArgs) {
-		SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+    }
+
+    @Override
+    public int delete(Uri uri, String where, String[] whereArgs) {
+        SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         int count;
         switch (sUriMatcher.match(uri)) {
-        case SLOTTED_ITEM:
-            count = db.delete(SLOTTED_ITEM_TABLE_NAME, where, whereArgs);
-            break;
-        case SLOTTED_ITEM_ID:
-        	long id = ContentUris.parseId(uri);
-        	String[] idAr = {String.valueOf(id)};
-        	count = db.delete(SLOTTED_ITEM_TABLE_NAME, "_ID = ?", idAr);
-        	break;
-        default:
-            throw new IllegalArgumentException("Unknown URI " + uri);
+            case SLOTTED_ITEM:
+                count = db.delete(SLOTTED_ITEM_TABLE_NAME, where, whereArgs);
+                break;
+            case SLOTTED_ITEM_ID:
+                long id = ContentUris.parseId(uri);
+                String[] idAr = {String.valueOf(id)};
+                count = db.delete(SLOTTED_ITEM_TABLE_NAME, "_ID = ?", idAr);
+                break;
+            default:
+                throw new IllegalArgumentException("Unknown URI " + uri);
         }
 
         getContext().getContentResolver().notifyChange(uri, null);
         return count;
-	}
+    }
 
-	@Override
-	public String getType(Uri uri) {
-		 switch (sUriMatcher.match(uri)) {
-	        case SLOTTED_ITEM:
-	        	return "vnd.android.cursor.dir/vnd.pfpt.slotted_item";
-	        case SLOTTED_ITEM_ID:
-	        	return "vnd.android.cursor.item/vnd.pfpt.slotted_item";
+    @Override
+    public String getType(Uri uri) {
+        switch (sUriMatcher.match(uri)) {
+            case SLOTTED_ITEM:
+                return "vnd.android.cursor.dir/vnd.pfpt.slotted_item";
+            case SLOTTED_ITEM_ID:
+                return "vnd.android.cursor.item/vnd.pfpt.slotted_item";
 
-	        default:
-	            throw new IllegalArgumentException("Unknown URI " + uri);
+            default:
+                throw new IllegalArgumentException("Unknown URI " + uri);
         }
-	}
+    }
 
-	@Override
-	public Uri insert(Uri uri, ContentValues initialValues) {
-		 // Validate the requested uri
+    @Override
+    public Uri insert(Uri uri, ContentValues initialValues) {
+        // Validate the requested uri
         if (sUriMatcher.match(uri) != SLOTTED_ITEM) {
             throw new IllegalArgumentException("Unknown URI " + uri);
         }
 
         ContentValues values;
-        
+
         if (initialValues != null) {
             values = new ContentValues(initialValues);
         } else {
@@ -128,25 +126,25 @@ public class SlottedItemProvider extends ContentProvider
         }
 
         throw new SQLException("Failed to insert row into " + uri);
-	}
+    }
 
-	@Override
-	public Cursor query(Uri uri, String[] projection, String selection,
-			String[] selectionArgs, String sortOrder) {
-		SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
+    @Override
+    public Cursor query(Uri uri, String[] projection, String selection,
+                        String[] selectionArgs, String sortOrder) {
+        SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
         qb.setTables(SLOTTED_ITEM_TABLE_NAME);
 
         switch (sUriMatcher.match(uri)) {
-        case SLOTTED_ITEM:
-            qb.setProjectionMap(slottedItemProjectionMap);
-            break;
-        case SLOTTED_ITEM_ID:
-        	selection = "_ID = ?";
-        	long id = ContentUris.parseId(uri);
-        	selectionArgs = new String[] {String.valueOf(id)};
-        	break;
-        default:
-            throw new IllegalArgumentException("Unknown URI " + uri);
+            case SLOTTED_ITEM:
+                qb.setProjectionMap(slottedItemProjectionMap);
+                break;
+            case SLOTTED_ITEM_ID:
+                selection = "_ID = ?";
+                long id = ContentUris.parseId(uri);
+                selectionArgs = new String[]{String.valueOf(id)};
+                break;
+            default:
+                throw new IllegalArgumentException("Unknown URI " + uri);
         }
 
         // If no sort order is specified use the default
@@ -164,31 +162,31 @@ public class SlottedItemProvider extends ContentProvider
         // Tell the cursor what uri to watch, so it knows when its source data changes
         c.setNotificationUri(getContext().getContentResolver(), uri);
         return c;
-	}
+    }
 
-	@Override
-	public int update(Uri uri, ContentValues values, String where,
-			String[] whereArgs) {
-		SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+    @Override
+    public int update(Uri uri, ContentValues values, String where,
+                      String[] whereArgs) {
+        SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         int count;
         switch (sUriMatcher.match(uri)) {
-        case SLOTTED_ITEM:
-            count = db.update(SLOTTED_ITEM_TABLE_NAME, values, where, whereArgs);
-            break;
+            case SLOTTED_ITEM:
+                count = db.update(SLOTTED_ITEM_TABLE_NAME, values, where, whereArgs);
+                break;
 
-        default:
-            throw new IllegalArgumentException("Unknown URI " + uri);
+            default:
+                throw new IllegalArgumentException("Unknown URI " + uri);
         }
 
         getContext().getContentResolver().notifyChange(uri, null);
         return count;
-	}
+    }
 
-	static {
+    static {
         sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
         sUriMatcher.addURI("com.cthos.pfpt.core.slotteditemprovider", "slotted_item", SLOTTED_ITEM);
         sUriMatcher.addURI("com.cthos.pfpt.core.slotteditemprovider", "slotted_item/#", SLOTTED_ITEM_ID);
-        
+
         slottedItemProjectionMap = new HashMap<String, String>();
         slottedItemProjectionMap.put("_id", "_id");
         slottedItemProjectionMap.put("name", "name");

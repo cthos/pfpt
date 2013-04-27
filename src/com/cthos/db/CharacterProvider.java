@@ -17,11 +17,10 @@ import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
 
-public class CharacterProvider extends ContentProvider
-{
-	public static final String AUTHORITY = "com.cthos.pfpt.core";
-	
-	private static final String TAG = "CharacterProvider";
+public class CharacterProvider extends ContentProvider {
+    public static final String AUTHORITY = "com.cthos.pfpt.core";
+
+    private static final String TAG = "CharacterProvider";
 
     private static final String DATABASE_NAME = "character.db";
     // Store this somewhere in a registry or something.
@@ -29,12 +28,12 @@ public class CharacterProvider extends ContentProvider
     private static final String CHARACTER_TABLE_NAME = "characters";
     private static final String CLASS_TABLE_NAME = "character_classes";
     private static final String DERIVED_TRAITS_NAME = "character_dt";
-    
+
     private static HashMap<String, String> characterProjectionMap;
-    
+
     private static final int CHARACTER = 1;
     private static final int CHARACTER_ID = 2;
-    
+
     private static final UriMatcher sUriMatcher;
 
     /**
@@ -72,7 +71,7 @@ public class CharacterProvider extends ContentProvider
             onCreate(db);
         }
     }
-    
+
     private DatabaseHelper mOpenHelper;
 
     @Override
@@ -83,21 +82,21 @@ public class CharacterProvider extends ContentProvider
 
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs,
-            String sortOrder) {
+                        String sortOrder) {
         SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
         qb.setTables(CHARACTER_TABLE_NAME);
 
         switch (sUriMatcher.match(uri)) {
-        case CHARACTER:
-            qb.setProjectionMap(characterProjectionMap);
-            break;
-        case CHARACTER_ID:
-        	selection = "_ID = ?";
-        	long id = ContentUris.parseId(uri);
-        	selectionArgs = new String[] {String.valueOf(id)};
-        	break;
-        default:
-            throw new IllegalArgumentException("Unknown URI " + uri);
+            case CHARACTER:
+                qb.setProjectionMap(characterProjectionMap);
+                break;
+            case CHARACTER_ID:
+                selection = "_ID = ?";
+                long id = ContentUris.parseId(uri);
+                selectionArgs = new String[]{String.valueOf(id)};
+                break;
+            default:
+                throw new IllegalArgumentException("Unknown URI " + uri);
         }
 
         // If no sort order is specified use the default
@@ -120,11 +119,11 @@ public class CharacterProvider extends ContentProvider
     @Override
     public String getType(Uri uri) {
         switch (sUriMatcher.match(uri)) {
-        case CHARACTER:
-        	return "vnd.android.cursor.dir/vnd.pfpt.character";
+            case CHARACTER:
+                return "vnd.android.cursor.dir/vnd.pfpt.character";
 
-        default:
-            throw new IllegalArgumentException("Unknown URI " + uri);
+            default:
+                throw new IllegalArgumentException("Unknown URI " + uri);
         }
     }
 
@@ -158,16 +157,16 @@ public class CharacterProvider extends ContentProvider
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         int count;
         switch (sUriMatcher.match(uri)) {
-        case CHARACTER:
-            count = db.delete(CHARACTER_TABLE_NAME, where, whereArgs);
-            break;
-        case CHARACTER_ID:
-        	long id = ContentUris.parseId(uri);
-        	String[] idAr = {String.valueOf(id)};
-        	count = db.delete(CHARACTER_TABLE_NAME, "_ID = ?", idAr);
-        	break;
-        default:
-            throw new IllegalArgumentException("Unknown URI " + uri);
+            case CHARACTER:
+                count = db.delete(CHARACTER_TABLE_NAME, where, whereArgs);
+                break;
+            case CHARACTER_ID:
+                long id = ContentUris.parseId(uri);
+                String[] idAr = {String.valueOf(id)};
+                count = db.delete(CHARACTER_TABLE_NAME, "_ID = ?", idAr);
+                break;
+            default:
+                throw new IllegalArgumentException("Unknown URI " + uri);
         }
 
         getContext().getContentResolver().notifyChange(uri, null);
@@ -179,23 +178,23 @@ public class CharacterProvider extends ContentProvider
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         int count;
         switch (sUriMatcher.match(uri)) {
-        case CHARACTER:
-            count = db.update(CHARACTER_TABLE_NAME, values, where, whereArgs);
-            break;
+            case CHARACTER:
+                count = db.update(CHARACTER_TABLE_NAME, values, where, whereArgs);
+                break;
 
-        default:
-            throw new IllegalArgumentException("Unknown URI " + uri);
+            default:
+                throw new IllegalArgumentException("Unknown URI " + uri);
         }
 
         getContext().getContentResolver().notifyChange(uri, null);
         return count;
     }
-    
+
     static {
         sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
         sUriMatcher.addURI("com.cthos.pfpt.core", "character", CHARACTER);
         sUriMatcher.addURI("com.cthos.pfpt.core", "character/#", CHARACTER_ID);
-        
+
         characterProjectionMap = new HashMap<String, String>();
         characterProjectionMap.put("_id", "_id");
         characterProjectionMap.put("name", "name");
