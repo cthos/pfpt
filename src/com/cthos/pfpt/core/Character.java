@@ -32,13 +32,13 @@ public class Character {
 
     public String name;
 
-    public HashMap<String, Number> attributes = new HashMap();
+    public HashMap<String, Number> attributes = new HashMap<String, Number>();
 
-    public HashMap<String, Number> modifiedAttributes;
+    public HashMap<String, Number> modifiedAttributes = new HashMap<String, Number>();
 
-    public HashMap<String, Number> saves = new HashMap();
+    public HashMap<String, Number> saves = new HashMap<String, Number>();
 
-    public HashMap<String, Number> modifiedSaves;
+    public HashMap<String, Number> modifiedSaves = new HashMap<String, Number>();
 
     public long ac;
 
